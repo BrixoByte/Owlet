@@ -75,3 +75,10 @@ from existing commit history) was set because none was configured.
 - **Local folder rename** `F:\Developer\Web Apps\DevPad` → `Owlet`: optional, cosmetic. Safe steps (outside the IDE): close IDE → rename folder in Explorer → reopen; the `.git` dir and remotes need no changes. Update any IDE workspace/shortcut paths afterward.
 - **Old Pages URL** `https://brixobyte.github.io/DevPad/` now 404s — GitHub repo redirects do **not** cover Pages. External bookmarks pointing there must be updated.
 - Merge of `chore/rename-owlet` → `main` and post-deploy live smoke checks remain pending user approval.
+
+## Live-site check results (2026-11-25, before merge)
+
+- `https://github.com/BrixoByte/DevPad` → 301 redirect to `/BrixoByte/Owlet` (repo redirect works)
+- `https://brixobyte.github.io/DevPad/` → 404 (expected; Pages has no repo redirects)
+- `https://brixobyte.github.io/Owlet/` → 200
+- `sw.js`, `landing/`, `docs/`, `roadmap/` on the new Pages URL → 404 **for a pre-existing reason**: `origin/main` (`a53437e`) still holds the original DevPad-era files. The current app lives on `chore/reorganize` and was never merged. Merging `chore/rename-owlet` (or `chore/reorganize`) to `main` will deploy the real Owlet site.
