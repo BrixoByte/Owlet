@@ -1,7 +1,7 @@
 /* ==========================================================================
    getting-started.js — Group 1: Introduction, Quick start, Browser support,
    Offline use & privacy. Every "works today" statement here was verified
-   against the app source (README.md, js/*.js, index.html, CONTRACT.md).
+   against the app source (README.md, js/*.js, index.html, project/CONTRACT.md).
    ========================================================================== */
 'use strict';
 window.OwletDocs = window.OwletDocs || { groups: [] };

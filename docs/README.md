@@ -77,8 +77,8 @@ so docs text cannot inject markup. Keep it that way when editing `docs.js`.
 
 - **Honesty**: unfinished features get `badge: 'planned'` or `'experimental'`
   and a callout saying so. Never document a feature as working unless it does.
-- **Sources**: claims come from the code (`js/*.js`), `CONTRACT.md`, and
-  `roadmap.md` — not from the README alone.
+- **Sources**: claims come from the code (`js/*.js`), `project/CONTRACT.md`, and
+  `project/roadmap.md` — not from the README alone.
 - **Style**: short sentences, beginner-first, define jargon on first use.
 
 ## CONFIG

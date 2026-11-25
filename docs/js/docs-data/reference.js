@@ -1,5 +1,5 @@
 /* ==========================================================================
-   reference.js — Group 6: roadmap status (mirrors roadmap.md phases),
+   reference.js — Group 6: roadmap status (mirrors project/roadmap.md phases),
    changelog, FAQ, glossary and credits.
    ========================================================================== */
 'use strict';
@@ -13,9 +13,9 @@ window.OwletDocs.groups.push({
         {
             id: 'reference/roadmap',
             title: 'Roadmap status',
-            description: 'Where every roadmap phase stands right now — mapped from roadmap.md to what the code actually does.',
+            description: 'Where every roadmap phase stands right now — mapped from project/roadmap.md to what the code actually does.',
             blocks: [
-                { t: 'p', x: ['The full plan lives in ', { a: 'roadmap.md', href: 'https://github.com/BrixoByte/Owlet/blob/main/roadmap.md' }, '. This table reflects the code as it exists today:'] },
+                { t: 'p', x: ['The full plan lives in ', { a: 'roadmap.md', href: 'https://github.com/BrixoByte/Owlet/blob/main/project/roadmap.md' }, '. This table reflects the code as it exists today:'] },
                 { t: 'table', head: ['Phase', 'Deliverable', 'Status'], rows: [
                     ['0 — Repo hygiene', 'Clean README, GitHub Pages demo', [{ badge: { kind: 'ok', text: 'Done' } }]],
                     ['1 — Multi-file workspace', 'File tree, tabs, storage, Blob preview', [{ badge: { kind: 'ok', text: 'Done' } }]],
@@ -76,7 +76,7 @@ window.OwletDocs.groups.push({
                 { t: 'table', head: ['Term', 'Meaning'], rows: [
                     ['BYOK', 'Bring your own key — optional cloud features use an API key you supply, stored only in your browser.'],
                     ['Bridge', ['The script injected into the preview iframe that reports console calls and errors to Owlet (', { c: 'preview.js' }, ').']],
-                    ['Contract', ['The documented boundary between the UI layer (', { c: 'js/ui/' }, ') and logic layer (', { c: 'js/' }, ') — ', { c: 'contract.js' }, ' + CONTRACT.md.']],
+                    ['Contract', ['The documented boundary between the UI layer (', { c: 'js/ui/' }, ') and logic layer (', { c: 'js/' }, ') — ', { c: 'contract.js' }, ' + project/CONTRACT.md.']],
                     ['Dock', 'The bottom panel hosting Console, Terminal and Problems tabs.'],
                     ['Engine', 'What interprets terminal input — the local virtual engine today, a cloud engine when sandbox support lands.'],
                     ['Mock layer', ['js/ui/mock.js — fake data that fills designed-but-unwired UI (git, AI). Off via ', { c: 'owlet:ui:mock' }, '.']],

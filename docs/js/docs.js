@@ -15,7 +15,7 @@ var CONFIG = {
     docsPath: 'docs',
     appUrl: '../index.html',
     landingUrl: '../landing/index.html',
-    roadmapUrl: 'https://github.com/BrixoByte/Owlet/blob/main/roadmap.md',
+    roadmapUrl: 'https://github.com/BrixoByte/Owlet/blob/main/project/roadmap.md',
     issuesUrl: 'https://github.com/BrixoByte/Owlet/issues/new',
     version: 'Latest',
     docsVersion: 'Latest',

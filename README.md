@@ -156,7 +156,7 @@ export default {
 
 ## Future
 
-- **Tauri desktop app** — the same frontend wrapped in Rust for a native terminal and full file-system access (see `roadmap.md`).
+- **Tauri desktop app** — the same frontend wrapped in Rust for a native terminal and full file-system access (see `project/roadmap.md`).
 - **Optional share backend** — only if project sharing becomes a requirement.
 
 ## 🤝 Contributing

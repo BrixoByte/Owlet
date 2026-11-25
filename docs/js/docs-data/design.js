@@ -121,7 +121,7 @@ window.OwletDocs.groups.push({
                 { t: 'steps', items: [
                     { title: 'Token-level', text: ['Adjust a value in ', { c: 'tokens.css' }, ' — e.g. a warmer accent or tighter radius. Smallest diff, widest reach.'] },
                     { title: 'Component-level', text: 'Restyle one component across its selectors, still reading tokens only.' },
-                    { title: 'Structural', text: 'Change markup and CSS together — needs an issue discussion first so the contract (CONTRACT.md) stays intact.' }
+                    { title: 'Structural', text: 'Change markup and CSS together — needs an issue discussion first so the contract (project/CONTRACT.md) stays intact.' }
                 ] },
                 { t: 'h2', x: 'Proposal checklist' },
                 { t: 'list', items: [

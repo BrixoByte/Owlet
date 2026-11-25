@@ -97,7 +97,7 @@ window.OwletDocs.groups.push({
                 { t: 'steps', items: [
                     { title: 'Fork and branch', text: [{ c: 'git checkout -b feature/your-thing' }, ' from an up-to-date ', { c: 'main' }, '.'] },
                     { title: 'Make the change', text: 'One feature or fix per PR — small diffs get reviewed, big ones stall.' },
-                    { title: 'Update docs', text: 'If you changed behaviour, update the matching page in docs/js/docs-data/. If you changed the UI contract, update CONTRACT.md.' },
+                    { title: 'Update docs', text: 'If you changed behaviour, update the matching page in docs/js/docs-data/. If you changed the UI contract, update project/CONTRACT.md.' },
                     { title: 'Verify manually', text: 'Open the app, use the feature, try the edge cases, note any console errors.' },
                     { title: 'Open the PR', text: 'Describe what changed and how you tested it. Screenshots help for UI changes.' }
                 ] },
@@ -127,7 +127,7 @@ window.OwletDocs.groups.push({
                 ] },
                 { t: 'h2', x: 'Medium projects' },
                 { t: 'list', items: [
-                    ['Wire a stub contract event to a real backend (the event table in CONTRACT.md is the to-do list).'],
+                    ['Wire a stub contract event to a real backend (the event table in project/CONTRACT.md is the to-do list).'],
                     ['Extend the docs block renderer with a new block type.'],
                     ['Improve console object inspection (currently stringifies everything).'],
                     ['Finish the sandbox terminal bridge — the biggest open feature.']

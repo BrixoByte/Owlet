@@ -129,7 +129,7 @@ window.OwletRoadmap = {
         },
         {
             id: 'phase-8', number: 8, title: 'UI polish',
-            summary: 'The workbench redesign from ui.md: presets, command palette, toasts, a11y pass.',
+            summary: 'The workbench redesign from project/ui.md: presets, command palette, toasts, a11y pass.',
             status: 'in-progress', target: 'Now', tags: ['ui'],
             cost: 'Free', offline: true, needs: ['phase-1'],
             deliverable: 'A workbench that feels like a real IDE while staying beginner-readable.',

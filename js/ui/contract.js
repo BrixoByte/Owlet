@@ -6,7 +6,7 @@
 // Logic -> UI  : call the functions on window.OwletUI (setTree, toast, ...).
 //                They only store data and announce 'owletui:changed', so the
 //                panels re-render without knowing who sent the data.
-// Reference: CONTRACT.md in the project root.
+// Reference: project/CONTRACT.md.
 
 window.Owlet = window.Owlet || {};
 window.OwletUI = window.OwletUI || {};
@@ -24,7 +24,7 @@ OwletUI.snapshot = {
 };
 
 // Dispatch a UI event (UI -> logic). Listeners are registered below.
-// detail: plain object; see CONTRACT.md for each event's fields.
+// detail: plain object; see project/CONTRACT.md for each event's fields.
 OwletUI.emit = function (name, detail) {
     window.dispatchEvent(new CustomEvent(name, { detail: detail || {} }));
 };
@@ -151,7 +151,7 @@ window.addEventListener('ui:setting-change', function (e) {
  'ui:git-checkout', 'ui:git-sync', 'ui:ai-send', 'ui:ai-stop',
  'ui:collab-share', 'ui:sandbox-connect'].forEach(function (name) {
     window.addEventListener(name, function (e) {
-        // TODO: connect backend for this event (see CONTRACT.md)
+        // TODO: connect backend for this event (see project/CONTRACT.md)
         Owlet.log('[OwletUI] stub event', name, e.detail || {});
     });
 });

@@ -13,7 +13,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const OUT_DIR = join(ROOT, 'qa', 'report');
 const REPO_BLOB = 'https://github.com/BrixoByte/Owlet/blob/main/';
 
-const PAGES = ['index.html', 'styleguide.html', 'landing/index.html', 'docs/index.html', 'roadmap/index.html'];
+const PAGES = ['index.html', 'project/styleguide.html', 'landing/index.html', 'docs/index.html', 'roadmap/index.html'];
 const JS_FILES = ['landing/js/main.js', 'landing/js/showcase.js', 'landing/js/scenes.js', 'roadmap/js/roadmap-data.js', 'roadmap/js/roadmap.js', 'docs/js/docs.js', 'docs/js/search.js'];
 const SKIP_SCHEMES = /^(data:|javascript:|mailto:|tel:)/i;
 

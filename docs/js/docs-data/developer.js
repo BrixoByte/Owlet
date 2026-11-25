@@ -1,6 +1,6 @@
 /* ==========================================================================
    developer.js — Group 4: for developers extending Owlet. Event tables and
-   function lists mirror CONTRACT.md exactly; module behaviour verified in
+   function lists mirror project/CONTRACT.md exactly; module behaviour verified in
    js/*.js (state, storage, preview, terminal, lint, editor).
    ========================================================================== */
 'use strict';
