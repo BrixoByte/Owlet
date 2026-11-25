@@ -2,8 +2,8 @@
 // README table. Used by sync-shortcuts.js (writes README) and by the parity spec.
 //
 // Sources of truth:
-//   js/ui/shortcuts.js               in-app list (the README table is generated from it)
-//   docs/js/docs-data/using-owlet.js docs list (may add contextual rows, see CONTEXT_ONLY)
+//   site/playground/js/ui/shortcuts.js           in-app list (the README table is generated from it)
+//   site/docs/js/docs-data/using-owlet.js        docs list (may add contextual rows, see CONTEXT_ONLY)
 
 const fs = require('fs');
 const path = require('path');
@@ -25,7 +25,7 @@ function read(rel) {
 function parseAppShortcuts() {
   const out = [];
   let group = '';
-  read('js/ui/shortcuts.js').split('\n').forEach((line) => {
+  read('site/playground/js/ui/shortcuts.js').split('\n').forEach((line) => {
     const g = line.match(/group:\s*'([^']+)'/);
     if (g) group = g[1];
     const m = line.match(/key:\s*'([^']+)',\s*action:\s*'([^']+)'/);
@@ -39,7 +39,7 @@ function parseDocsShortcuts() {
   const out = [];
   const re = /\{ keys: '([^']+)', action: '([^']+)', ctx: '([^']+)' \}/g;
   let m;
-  const text = read('docs/js/docs-data/using-owlet.js');
+  const text = read('site/docs/js/docs-data/using-owlet.js');
   while ((m = re.exec(text)) !== null) out.push({ keys: m[1], action: m[2], ctx: m[3] });
   return out;
 }

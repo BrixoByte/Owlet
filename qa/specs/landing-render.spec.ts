@@ -5,7 +5,7 @@ import { test, expect } from '../fixtures/collector';
 
 test.describe('landing render @landing', () => {
   test('landing renders with no console errors and no split-view copy', async ({ page, collector }) => {
-    await page.goto('/landing/index.html');
+    await page.goto('/');
     await expect(page.locator('#hero-title')).toBeVisible();
     await expect(page.locator('.hero-eyebrow')).toContainText('v0.1 beta');
     const text = (await page.locator('body').innerText()).toLowerCase();

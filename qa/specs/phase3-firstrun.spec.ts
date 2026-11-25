@@ -4,7 +4,7 @@ import { test, expect } from '../fixtures/collector';
 
 test.describe('first run @firstrun', () => {
   test('New project opens the editor, lists the starter files and renders a preview', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/playground/');
     await page.locator('#welcome').getByRole('button', { name: /New project/ }).click();
 
     await expect(page.locator('#welcome')).toBeHidden();
@@ -19,7 +19,7 @@ test.describe('first run @firstrun', () => {
   });
 
   test('welcome "New file" card creates a file in one click, no hidden Explorer needed', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/playground/');
     const card = page.locator('#welcome').getByRole('button', { name: /New file/ });
     await expect(card).toBeVisible();
     await card.click();
@@ -34,7 +34,7 @@ test.describe('first run @firstrun', () => {
   });
 
   test('welcome card titles match their template and action names', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/playground/');
     const titles = await page.locator('#welcome .card-title').allTextContents();
     expect(titles).toEqual(['Open folder', 'New project', 'New file', 'Clone repository']);
   });

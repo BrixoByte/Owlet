@@ -69,7 +69,7 @@ test.describe('session restore @session', () => {
         get() { throw new DOMException('Access is denied for this document.', 'SecurityError'); },
       });
     });
-    await page.goto('/');
+    await page.goto('/playground/');
 
     await expect(page.locator('#welcome')).toBeVisible();
     const pageErrors = collector.findings.filter((f) => f.kind === 'pageerror');

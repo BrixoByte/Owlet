@@ -1,8 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 import path from 'node:path';
 
-// The app is a static site at the repo root (one level above /qa).
-const APP_ROOT = path.resolve(__dirname, '..');
+// The public site lives in /site (one level above /qa). The app itself
+// is served at /playground/ — specs must goto('/playground/') for it.
+const APP_ROOT = path.resolve(__dirname, '..', 'site');
 const PORT = 4173;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
 

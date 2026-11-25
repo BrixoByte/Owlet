@@ -13,8 +13,8 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const OUT_DIR = join(ROOT, 'qa', 'report');
 const REPO_BLOB = 'https://github.com/BrixoByte/Owlet/blob/main/';
 
-const PAGES = ['index.html', 'project/styleguide.html', 'landing/index.html', 'docs/index.html', 'roadmap/index.html'];
-const JS_FILES = ['landing/js/main.js', 'landing/js/showcase.js', 'landing/js/scenes.js', 'roadmap/js/roadmap-data.js', 'roadmap/js/roadmap.js', 'docs/js/docs.js', 'docs/js/search.js'];
+const PAGES = ['site/index.html', 'site/404.html', 'project/styleguide.html', 'site/docs/index.html', 'site/roadmap/index.html', 'site/playground/index.html'];
+const JS_FILES = ['site/js/main.js', 'site/js/showcase.js', 'site/js/scenes.js', 'site/roadmap/js/roadmap-data.js', 'site/roadmap/js/roadmap.js', 'site/docs/js/docs.js', 'site/docs/js/search.js'];
 const SKIP_SCHEMES = /^(data:|javascript:|mailto:|tel:)/i;
 
 const findings = [];
@@ -82,7 +82,12 @@ for (const page of PAGES) {
     const path = pathPart.split('?')[0];
     let targetRel = page;
     if (path) {
-      let abs = resolve(dirname(join(ROOT, page)), decodeURIComponent(path));
+      // Root-absolute links inside published pages resolve against site/
+      // (404.html uses them because it serves at arbitrary depths).
+      const absBase = path.startsWith('/') && page.startsWith('site/')
+        ? join(ROOT, 'site')
+        : dirname(join(ROOT, page));
+      let abs = resolve(absBase, decodeURIComponent(path.replace(/^\/+/, '')));
       if (path.endsWith('/') || (existsSync(abs) && statSync(abs).isDirectory())) abs = join(abs, 'index.html');
       if (!existsSync(abs)) {
         add({ id: 'LINK-BROKEN', severity: 'Medium', area: 'links', title: 'Relative link/asset does not exist',
@@ -115,7 +120,7 @@ for (const jsRel of JS_FILES.filter((f) => existsSync(join(ROOT, f)))) {
 // 3) Shortcut parity: README table vs in-app shortcut list.
 const readme = read('README.md');
 const readmeKeys = [...readme.matchAll(/^\|\s*`+\s*(.+?)\s*`+\s*\|/gm)].map((m) => m[1]).filter((k) => /^(Ctrl|Alt|Shift|Esc)\b/.test(k));
-const appShortcuts = read('js/ui/shortcuts.js');
+const appShortcuts = read('site/playground/js/ui/shortcuts.js');
 const appKeys = [...appShortcuts.matchAll(/key:\s*'([^']+)'/g)].map((m) => m[1]);
 const notInApp = readmeKeys.filter((k) => !appKeys.includes(k));
 if (notInApp.length) add({ id: 'SC-README', severity: 'Low', area: 'docs', title: 'README shortcut not in in-app list', keys: notInApp });
@@ -124,7 +129,7 @@ add({ id: 'SC-PARITY', severity: 'Info', area: 'docs', title: 'In-app shortcuts 
   keys: notInReadme, readmeKeys, appKeys });
 
 // Heuristic handler presence (static only; the Playwright suite must press each key).
-const jsCorpus = ['js/app.js', 'js/editor.js', 'js/editorgroups.js', 'js/ui/shortcuts.js', 'js/ui/layout.js', 'js/ui/menubar.js']
+const jsCorpus = ['site/playground/js/app.js', 'site/playground/js/editor.js', 'site/playground/js/editorgroups.js', 'site/playground/js/ui/shortcuts.js', 'site/playground/js/ui/layout.js', 'site/playground/js/ui/menubar.js']
   .filter((f) => existsSync(join(ROOT, f))).map(read).join('\n');
 const handlerHints = {
   'Ctrl+S': /saveActive/, 'Ctrl+P': /openPalette/, 'Ctrl+W': /closeActive|closeTab/i,
@@ -137,7 +142,7 @@ if (handlerMissing.length) add({ id: 'SC-HANDLER', severity: 'Medium', area: 'sh
 // 4) Branding: leftover DevPad outside migration shims and historical notes.
 const brandingAllowed = /migration|DevPad-era|Formerly known as DevPad|formerly-DevPad|devpad/i;
 const brandHits = [];
-const scanDirs = ['', 'landing', 'docs', 'roadmap', 'js', 'css', 'js/ui'];
+const scanDirs = ['', 'site', 'site/js', 'site/css', 'site/docs', 'site/roadmap', 'site/playground', 'site/playground/js', 'site/playground/css', 'site/playground/js/ui', 'project'];
 for (const d of scanDirs) {
   const abs = join(ROOT, d);
   if (!existsSync(abs)) continue;
@@ -167,9 +172,9 @@ const externalHosts = [...externals.keys()].map((u) => { try { return new URL(u)
 const hostCounts = externalHosts.reduce((a, h) => ((a[h] = (a[h] || 0) + 1), a), {});
 
 // 7) Repo hygiene files referenced by docs.
-for (const f of ['CODE_OF_CONDUCT.md', 'LICENSE', 'CONTRIBUTING.md', '.github/ISSUE_TEMPLATE', 'assets/screenshot.png']) {
+for (const f of ['CODE_OF_CONDUCT.md', 'LICENSE', 'CONTRIBUTING.md', '.github/ISSUE_TEMPLATE', 'site/assets/screenshot.png']) {
   if (!existsSync(join(ROOT, f))) {
-    const severity = f === 'CODE_OF_CONDUCT.md' || f === 'assets/screenshot.png' ? 'Medium' : 'Low';
+    const severity = f === 'CODE_OF_CONDUCT.md' || f === 'site/assets/screenshot.png' ? 'Medium' : 'Low';
     add({ id: 'REPO-' + f.replace(/[^a-z0-9]+/gi, '_'), severity, area: 'repo', title: 'Referenced file/folder missing', file: f });
   }
 }

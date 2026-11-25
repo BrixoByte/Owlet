@@ -4,14 +4,14 @@ import { expect, type Page } from '@playwright/test';
 
 // Open a fresh project from the Welcome screen ("New project" = starter files).
 export async function openEmptyProject(page: Page) {
-  await page.goto('/');
+  await page.goto('/playground/');
   await page.getByTestId('welcome').getByTestId('welcome-card').filter({ hasText: /New project/ }).click();
 }
 
 // Start an empty project whose only file is `path` (Welcome "New file" card).
 // Use this when a test needs a specific file name; "New project" would add starter files.
 export async function openProjectWithFile(page: Page, path: string) {
-  await page.goto('/');
+  await page.goto('/playground/');
   await page.getByTestId('welcome').getByTestId('welcome-card').filter({ hasText: /New file/ }).click();
   const dialog = page.getByTestId('dialog').filter({ has: page.getByRole('textbox') });
   await expect(dialog).toBeVisible();

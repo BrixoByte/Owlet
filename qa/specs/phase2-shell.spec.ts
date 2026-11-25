@@ -4,7 +4,7 @@ import { test, expect } from '../fixtures/collector';
 
 test.describe('first load @smoke', () => {
   test('welcome screen renders with the three start cards and no Owlet console errors', async ({ page, collector }) => {
-    await page.goto('/');
+    await page.goto('/playground/');
     await expect(page).toHaveTitle(/Owlet/);
 
     const welcome = page.locator('#welcome');
@@ -19,7 +19,7 @@ test.describe('first load @smoke', () => {
   });
 
   test('"New project" card leaves the welcome screen and opens an editor', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/playground/');
     await page.locator('#welcome').getByRole('button', { name: /New project/ }).click();
     await expect(page.locator('#welcome')).toBeHidden();
     await expect(page.locator('.CodeMirror').first()).toBeVisible();

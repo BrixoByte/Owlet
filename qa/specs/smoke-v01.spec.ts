@@ -143,7 +143,7 @@ test.describe('v0.1 smoke @smoke', () => {
       localStorage.setItem('owlet:lastProject', '{not json');
       localStorage.setItem('owlet:project:broken', '%%%');
     });
-    await page.goto('/');
+    await page.goto('/playground/');
     await expect(page.locator('#topbar')).toBeVisible();
     await expect(page.getByTestId('status-bar')).toBeVisible();
     await expect(page.getByTestId('welcome')).toBeVisible();
@@ -154,7 +154,7 @@ test.describe('v0.1 smoke @smoke', () => {
     });
     const errors: string[] = [];
     blocked.on('pageerror', (e) => errors.push(e.message));
-    await blocked.goto('/');
+    await blocked.goto('/playground/');
     await expect(blocked.locator('#topbar')).toBeVisible();
     await expect(blocked.getByTestId('status-bar')).toBeVisible();
     expect(errors, 'uncaught errors with storage blocked').toEqual([]);
@@ -165,7 +165,7 @@ test.describe('v0.1 smoke @smoke', () => {
     const errors: string[] = [];
     page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
     page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
-    await page.goto('file:///' + path.join(REPO, 'index.html').replace(/\\/g, '/'));
+    await page.goto('file:///' + path.join(REPO, 'site', 'playground', 'index.html').replace(/\\/g, '/'));
     await expect(page.locator('#topbar')).toBeVisible({ timeout: 20_000 });
     await page.waitForTimeout(1500);
     expect(errors, 'console/page errors on file://').toEqual([]);
@@ -184,7 +184,7 @@ test.describe('v0.1 smoke @smoke', () => {
     const readme = fs.readFileSync(path.join(REPO, 'README.md'), 'utf8');
     for (const m of readme.matchAll(/\]\(([^)\s]+)\)/g)) check(path.join(REPO, 'README.md'), m[1]);
     for (const m of readme.matchAll(/(?:src|href)="([^"]+)"/g)) check(path.join(REPO, 'README.md'), m[1]);
-    for (const page of ['landing/index.html', 'docs/index.html', 'roadmap/index.html']) {
+    for (const page of ['site/index.html', 'site/docs/index.html', 'site/roadmap/index.html', 'site/playground/index.html']) {
       const full = path.join(REPO, page);
       const html = fs.readFileSync(full, 'utf8');
       for (const m of html.matchAll(/(?:src|href)="([^"]+)"/g)) check(full, m[1]);
