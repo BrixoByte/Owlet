@@ -3,7 +3,7 @@
 // so updates bust cleanly), network-first for everything else.
 // NOTE: service workers only work over http(s) or localhost — never file://.
 
-var CACHE_NAME = 'owlet-v1';
+var CACHE_NAME = 'owlet-v2';
 
 // App-shell files we always want available offline.
 var SHELL = [
