@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page not found — Owlet</title>
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/png" href="/assets/brand/icon-dark-32.png">
+    <style>
+        /* Self-contained: this page is served at arbitrary 404 URLs, so
+           relative asset paths cannot be trusted and no shared CSS is used. */
+        :root {
+            --canvas: #0b0c10;
+            --text-1: #e8eaf0;
+            --text-2: #a7adbb;
+            --line: rgba(255, 255, 255, 0.08);
+            --accent: #7f9ff5;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--canvas); color: var(--text-1);
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+            padding: 24px;
+        }
+        .card { max-width: 460px; text-align: center; }
+        .logo { width: 64px; height: auto; margin-bottom: 24px; }
+        .code { font-size: 64px; font-weight: 700; letter-spacing: 0.04em; color: var(--accent); }
+        h1 { font-size: 22px; font-weight: 600; margin: 8px 0 12px; }
+        p { color: var(--text-2); font-size: 15px; line-height: 1.6; margin-bottom: 28px; }
+        nav { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        a {
+            display: inline-block; padding: 10px 18px; border-radius: 8px;
+            font-size: 14px; font-weight: 600; text-decoration: none;
+            color: var(--text-1); border: 1px solid var(--line);
+        }
+        a.primary { background: var(--accent); border-color: transparent; color: #0b0c10; }
+        a:hover { border-color: var(--accent); }
+        a.primary:hover { filter: brightness(1.1); border-color: transparent; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <img class="logo" src="/assets/brand/mark-on-dark.png" alt="">
+        <div class="code">404</div>
+        <h1>Page not found</h1>
+        <p>The page you are looking for does not exist or has moved. Owlet lives in the playground — the landing, docs and roadmap are one level up.</p>
+        <nav>
+            <a class="primary" href="/">Home</a>
+            <a href="/playground/">Open Owlet</a>
+            <a href="/docs/">Docs</a>
+            <a href="/roadmap/">Roadmap</a>
+        </nav>
+    </div>
+</body>
+</html>

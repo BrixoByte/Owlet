@@ -1,0 +1,20 @@
+# Cloudflare Pages redirects — Owlet
+# ---------------------------------------------------------------------
+# Cloudflare Pages already serves /x/ when x/index.html exists and
+# redirects /x/index.html -> /x/ itself. These rules make the clean-URL
+# contract explicit and cover the old GitHub Pages layout where the app
+# sat at the site root and the landing page at /landing/.
+# No "/* /index.html 200" fallback on purpose: real 404s must stay 404s.
+
+# Trailing-slash + index normalization (explicit belt & braces).
+/index.html        /                    301
+/playground        /playground/         301
+/docs              /docs/               301
+/roadmap           /roadmap/            301
+
+# Old GitHub Pages layout (brixobyte.github.io/Owlet/…): the editor used
+# to live at the root and landing at /landing/.
+/landing/assets/*  /assets/:splat       301
+/landing/*         /                    301
+/sw.js             /playground/sw.js        301
+/manifest.json     /playground/manifest.json 301

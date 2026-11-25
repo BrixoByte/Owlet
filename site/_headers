@@ -1,0 +1,60 @@
+# Cloudflare Pages headers — Owlet
+# ---------------------------------------------------------------------
+# Baseline security headers on everything. No strict Content-Security-Policy:
+# every page ships inline <script> (theme bootstrap) and inline style attrs,
+# and external hosts (fonts.googleapis/gstatic, api.github.com,
+# avatars.githubusercontent.com, cdnjs, jsdelivr) would each need listing.
+# The playground additionally uses blob: URLs + a sandboxed iframe, where a
+# CSP would break the preview entirely. Revisit with a tested, per-page CSP.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+
+# HTML: no-cache so the page shell revalidates every load (no build step,
+# nothing is fingerprinted — stale HTML is the worst failure mode here).
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+/docs/
+  Cache-Control: no-cache
+/roadmap/
+  Cache-Control: no-cache
+/playground/
+  Cache-Control: no-cache
+/404.html
+  Cache-Control: no-cache
+
+# Service worker + manifest must always refetch — a stale sw.js would keep
+# the old app shell cached forever.
+/playground/sw.js
+  Cache-Control: no-cache
+/playground/manifest.json
+  Cache-Control: no-cache
+
+# Static assets: file names are NOT content-hashed, so `immutable` would be
+# a lie. 1 hour lets edits propagate quickly; brand artwork changes rarely,
+# so it gets a day.
+/assets/brand/*
+  Cache-Control: public, max-age=86400
+/assets/*
+  Cache-Control: public, max-age=3600
+/css/*
+  Cache-Control: public, max-age=3600
+/js/*
+  Cache-Control: public, max-age=3600
+/playground/css/*
+  Cache-Control: public, max-age=3600
+/playground/js/*
+  Cache-Control: public, max-age=3600
+/docs/css/*
+  Cache-Control: public, max-age=3600
+/docs/js/*
+  Cache-Control: public, max-age=3600
+/roadmap/css/*
+  Cache-Control: public, max-age=3600
+/roadmap/js/*
+  Cache-Control: public, max-age=3600

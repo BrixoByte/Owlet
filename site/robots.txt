@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://owlet.brixobyte.com/sitemap.xml
