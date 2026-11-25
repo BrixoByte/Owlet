@@ -5,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Owlet: a free, offline code editor in your browser</title>
     <meta name="description" content="Owlet is a free, open-source, offline-first web IDE. Write HTML, CSS and JavaScript with a real editor and live preview, right in your browser. MIT licensed.">
-    <link rel="canonical" href="https://brixobyte.github.io/Owlet/landing/">
+    <link rel="canonical" href="https://owlet.brixobyte.com/">
     <meta name="theme-color" content="#0b0c10">
-    <link rel="icon" type="image/png" href="../assets/brand/icon-dark-32.png" media="(prefers-color-scheme: dark)">
-    <link rel="icon" type="image/png" href="../assets/brand/icon-light-32.png" media="(prefers-color-scheme: light)">
-    <link rel="apple-touch-icon" href="../assets/brand/icon-180.png">
+    <link rel="icon" type="image/png" href="assets/brand/icon-dark-32.png" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" href="assets/brand/icon-light-32.png" media="(prefers-color-scheme: light)">
+    <link rel="apple-touch-icon" href="assets/brand/icon-180.png">
 
     <meta property="og:type" content="website">
     <meta property="og:title" content="Owlet: a free, offline code editor in your browser">
     <meta property="og:description" content="Write HTML, CSS and JavaScript with a real editor and live preview. Free, open source, works offline.">
-    <meta property="og:url" content="https://brixobyte.github.io/Owlet/landing/">
-    <meta property="og:image" content="https://brixobyte.github.io/Owlet/landing/assets/og-image.png">
+    <meta property="og:url" content="https://owlet.brixobyte.com/">
+    <meta property="og:image" content="https://owlet.brixobyte.com/assets/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Owlet: a free, offline code editor in your browser">
     <meta name="twitter:description" content="Free, open source, works offline. Try it in your browser.">
-    <meta name="twitter:image" content="https://brixobyte.github.io/Owlet/landing/assets/og-image.png">
+    <meta name="twitter:image" content="https://owlet.brixobyte.com/assets/og-image.png">
 
     <script type="application/ld+json">
     {
@@ -29,7 +29,7 @@
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Any modern web browser",
         "description": "A free, offline-first web IDE for writing HTML, CSS and JavaScript with a live preview.",
-        "url": "https://brixobyte.github.io/Owlet/",
+        "url": "https://owlet.brixobyte.com/",
         "license": "https://opensource.org/licenses/MIT",
         "isAccessibleForFree": true,
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
@@ -110,7 +110,7 @@
     <header class="site-nav" id="site-nav">
         <div class="container nav-row">
             <a class="brand" href="#top" aria-label="Owlet home">
-                <img class="brand-mark brand-mark--dark" src="../assets/brand/mark-on-dark-80.png" alt="" width="34" height="36"><img class="brand-mark brand-mark--light" src="../assets/brand/mark-on-light-80.png" alt="" width="36" height="36">
+                <img class="brand-mark brand-mark--dark" src="assets/brand/mark-on-dark-80.png" alt="" width="34" height="36"><img class="brand-mark brand-mark--light" src="assets/brand/mark-on-light-80.png" alt="" width="36" height="36">
                 <span>Owlet</span>
             </a>
             <button class="btn btn-ghost btn-icon nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu">
@@ -122,8 +122,8 @@
                     <a class="nav-link btn btn-ghost btn-sm" href="#features">Features</a>
                     <a class="nav-link btn btn-ghost btn-sm" href="#open-source">Open Source</a>
                     <a class="nav-link btn btn-ghost btn-sm" href="#faq">FAQ</a>
-                    <a class="nav-link btn btn-ghost btn-sm" data-config="roadmapUrl" href="https://github.com/BrixoByte/Owlet/blob/main/project/roadmap.md" target="_blank" rel="noopener">Roadmap</a>
-                    <a class="nav-link btn btn-ghost btn-sm" data-config="docsUrl" href="https://github.com/BrixoByte/Owlet/blob/main/README.md" target="_blank" rel="noopener">Docs</a>
+                    <a class="nav-link btn btn-ghost btn-sm" data-config="roadmapUrl" href="roadmap/" target="_blank" rel="noopener">Roadmap</a>
+                    <a class="nav-link btn btn-ghost btn-sm" data-config="docsUrl" href="docs/" target="_blank" rel="noopener">Docs</a>
                 </nav>
             </div>
             <div class="nav-actions">
@@ -132,7 +132,7 @@
                     <span class="btn-star-label">GitHub</span>
                     <span class="badge" id="nav-stars" aria-live="polite">&#8212;</span>
                 </a>
-                <a class="btn btn-primary btn-sm" data-config="demoUrl" href="../index.html">Try Owlet</a>
+                <a class="btn btn-primary btn-sm" data-config="demoUrl" href="playground/">Try Owlet</a>
                 <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light theme">
                     <svg class="icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
                     <svg class="icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
@@ -144,7 +144,7 @@
                 <span>Product</span>
                 <span aria-hidden="true">/</span>
                 <span>Overview</span>
-                <a class="sub-link" data-config="docsUrl" href="https://github.com/BrixoByte/Owlet/blob/main/README.md" target="_blank" rel="noopener">Read the docs &rarr;</a>
+                <a class="sub-link" data-config="docsUrl" href="docs/" target="_blank" rel="noopener">Read the docs &rarr;</a>
             </div>
         </div>
     </header>
@@ -184,7 +184,7 @@
                 <h1 id="hero-title" class="hero-title" data-reveal>A real code editor, right inside your browser tab.</h1>
                 <p class="hero-lead" data-reveal>Write HTML, CSS and JavaScript across a multi-file workspace, with a live preview that updates as you type. Nothing to install, and it keeps working when you go offline.</p>
                 <div class="hero-cta" data-reveal>
-                    <a class="btn btn-primary" data-config="demoUrl" href="../index.html">Open Owlet <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+                    <a class="btn btn-primary" data-config="demoUrl" href="playground/">Open Owlet <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
                     <a class="btn btn-secondary" data-config="repoUrl" href="https://github.com/BrixoByte/Owlet" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-branch"/></svg>View on GitHub</a>
                 </div>
                 <ul class="chip-row hero-chips" data-reveal aria-label="Highlights">
@@ -268,7 +268,7 @@
                                     <div class="slide-copy">
                                         <h3 class="slide-title">A blank file becomes a page</h3>
                                         <p class="muted">Create index.html, type the markup, and the preview answers back on the same screen. No server, no tab-switching.</p>
-                                        <p class="muted">Start in the <a class="ul-link" data-config="demoUrl" href="../index.html">Owlet workspace</a>.</p>
+                                        <p class="muted">Start in the <a class="ul-link" data-config="demoUrl" href="playground/">Owlet workspace</a>.</p>
                                     </div>
                                     <div class="slide-visual">
                                         <div class="stack-card pastel pastel-sage">
@@ -286,7 +286,7 @@
                                     <div class="slide-copy">
                                         <h3 class="slide-title">The console catches what breaks</h3>
                                         <p class="muted">A TypeError names the file and the line that failed. Fix the code, and the red clears on the next run.</p>
-                                        <p class="muted">Toggle the panel with Ctrl+J — <a class="ul-link" data-config="docsUrl" href="../docs/index.html">details in the docs</a>.</p>
+                                        <p class="muted">Toggle the panel with Ctrl+J — <a class="ul-link" data-config="docsUrl" href="docs/">details in the docs</a>.</p>
                                     </div>
                                     <div class="slide-visual">
                                         <div class="stack-card pastel pastel-peach">
@@ -303,7 +303,7 @@ console.log(price);
                                     <div class="slide-copy">
                                         <h3 class="slide-title">One page, three widths</h3>
                                         <p class="muted">The preview frame switches desktop, tablet and phone without leaving the project. The nav that fit at noon still has to fit at phone width.</p>
-                                        <p class="muted">More on <a class="ul-link" data-config="docsUrl" href="../docs/index.html">preview presets in the docs</a>.</p>
+                                        <p class="muted">More on <a class="ul-link" data-config="docsUrl" href="docs/">preview presets in the docs</a>.</p>
                                     </div>
                                     <div class="slide-visual">
                                         <div class="stack-card pastel pastel-lavender">
@@ -321,7 +321,7 @@ console.log(price);
                                     <div class="slide-copy">
                                         <h3 class="slide-title">Markup and styles, in one project</h3>
                                         <p class="muted">Open index.html and style.css as tabs in the same workspace. The class name you type in the markup is the one you style, and the preview shows both at once.</p>
-                                        <p class="muted">Try it yourself in <a class="ul-link" data-config="demoUrl" href="../index.html">Owlet</a>.</p>
+                                        <p class="muted">Try it yourself in <a class="ul-link" data-config="demoUrl" href="playground/">Owlet</a>.</p>
                                     </div>
                                     <div class="slide-visual">
                                         <div class="stack-card pastel pastel-sand">
@@ -338,7 +338,7 @@ console.log(price);
 
                             <div class="showcase-controls">
                                 <div class="showcase-actions">
-                                    <a class="btn btn-secondary btn-sm" data-config="demoUrl" href="../index.html"><svg aria-hidden="true"><use href="#i-arrow"/></svg>Try this in Owlet</a>
+                                    <a class="btn btn-secondary btn-sm" data-config="demoUrl" href="playground/"><svg aria-hidden="true"><use href="#i-arrow"/></svg>Try this in Owlet</a>
                                     <button class="btn btn-ghost btn-sm" id="slide-replay" type="button"><svg aria-hidden="true"><use href="#i-replay"/></svg>Replay</button>
                                 </div>
                                 <div class="dock" role="toolbar" aria-label="Features">
@@ -478,7 +478,7 @@ console.log(price);
                 <p class="soon-strip" data-reveal>
                     <span class="badge badge-soon">Planned</span>
                     <span class="muted">On the roadmap: AI assistant &middot; Terminal &middot; Git sync &middot; Cloud sandbox &middot; Python</span>
-                    <a href="../roadmap/index.html">See the roadmap<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+                    <a href="roadmap/">See the roadmap<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
                 </p>
             </div>
         </section>
@@ -501,7 +501,7 @@ console.log(price);
                             <li>Declare <code>user</code> above the line that uses it, then press <kbd>Ctrl+S</kbd>.</li>
                             <li>The error clears and the preview shows the greeting.</li>
                         </ol>
-                        <a class="btn btn-primary" data-config="demoUrl" href="../index.html">Open Owlet<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+                        <a class="btn btn-primary" data-config="demoUrl" href="playground/">Open Owlet<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
                     </div>
                     <div class="selector-mock" id="selector-mock">
                         <!-- Static fallback for no-JS: the default scene as real code. -->
@@ -547,7 +547,7 @@ console.log(user.name);  // ReferenceError: user is not defined</code></pre></di
                     <li><a class="help-row" href="https://github.com/BrixoByte/Owlet/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22" target="_blank" rel="noopener"><span class="help-ico"><svg aria-hidden="true"><use href="#i-star"/></svg></span><span><strong>Good first issues</strong><span class="muted">Small, clearly described tasks for a first pull request.</span></span><svg class="help-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
                     <li><a class="help-row" data-config="issuesUrl" href="https://github.com/BrixoByte/Owlet/issues/new" target="_blank" rel="noopener"><span class="help-ico"><svg aria-hidden="true"><use href="#i-bolt"/></svg></span><span><strong>Report a bug</strong><span class="muted">What broke, what you expected, and how to repeat it.</span></span><svg class="help-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
                     <li><a class="help-row" data-config="discussionsUrl" href="https://github.com/BrixoByte/Owlet/discussions" target="_blank" rel="noopener"><span class="help-ico"><svg aria-hidden="true"><use href="#i-chat"/></svg></span><span><strong>Suggest a feature</strong><span class="muted">Share an idea in Discussions so others can weigh in.</span></span><svg class="help-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
-                    <li><a class="help-row" data-config="docsUrl" href="../docs/index.html"><span class="help-ico"><svg aria-hidden="true"><use href="#i-book"/></svg></span><span><strong>Improve the docs</strong><span class="muted">Clarify a sentence, fix a typo, or add an example.</span></span><svg class="help-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+                    <li><a class="help-row" data-config="docsUrl" href="docs/"><span class="help-ico"><svg aria-hidden="true"><use href="#i-book"/></svg></span><span><strong>Improve the docs</strong><span class="muted">Clarify a sentence, fix a typo, or add an example.</span></span><svg class="help-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
                 </ul>
                 <p class="contrib-links" data-reveal>
                     <a data-config="contributingUrl" href="https://github.com/BrixoByte/Owlet/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING.md</a>
@@ -626,7 +626,7 @@ console.log(user.name);  // ReferenceError: user is not defined</code></pre></di
             <div class="container cta-inner" data-reveal>
                 <h2 id="cta-title">Not sure where to start?</h2>
                 <p>Describe what you want to build. Owlet opens with your idea in the link, so you can begin from there.</p>
-                <form class="idea-bar" id="idea-form" role="search" action="../index.html" method="get">
+                <form class="idea-bar" id="idea-form" role="search" action="playground/" method="get">
                     <label class="sr-only" for="idea-input">What do you want to build?</label>
                     <input class="idea-input" id="idea-input" name="idea" type="text" maxlength="200" placeholder="What do you want to build?" autocomplete="off">
                     <button class="btn btn-primary" type="submit">Open Owlet<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
@@ -642,7 +642,7 @@ console.log(user.name);  // ReferenceError: user is not defined</code></pre></di
             <div class="footer-grid">
                 <div>
                     <a class="brand" href="#top">
-                        <img class="brand-mark brand-mark--dark" src="../assets/brand/mark-on-dark-80.png" alt="" width="34" height="36"><img class="brand-mark brand-mark--light" src="../assets/brand/mark-on-light-80.png" alt="" width="36" height="36">
+                        <img class="brand-mark brand-mark--dark" src="assets/brand/mark-on-dark-80.png" alt="" width="34" height="36"><img class="brand-mark brand-mark--light" src="assets/brand/mark-on-light-80.png" alt="" width="36" height="36">
                         <span>Owlet</span>
                     </a>
                     <p class="muted" style="margin-top: var(--space-4); max-width: 320px">A free, open-source code editor that runs in your browser and keeps working offline.</p>
@@ -652,7 +652,7 @@ console.log(user.name);  // ReferenceError: user is not defined</code></pre></di
                     <ul style="display:grid; gap: 4px">
                         <li><a href="#product">Overview</a></li>
                         <li><a href="#features">Features</a></li>
-                        <li><a data-config="demoUrl" href="../index.html">Open Owlet</a></li>
+                        <li><a data-config="demoUrl" href="playground/">Open Owlet</a></li>
                     </ul>
                 </nav>
                 <nav aria-label="Open source links">
@@ -668,8 +668,8 @@ console.log(user.name);  // ReferenceError: user is not defined</code></pre></di
                     <ul style="display:grid; gap: 4px">
                         <li><a data-config="discussionsUrl" href="https://github.com/BrixoByte/Owlet/discussions" target="_blank" rel="noopener">Discussions</a></li>
                         <li><a data-config="issuesUrl" href="https://github.com/BrixoByte/Owlet/issues" target="_blank" rel="noopener">Issues</a></li>
-                        <li><a data-config="roadmapUrl" href="../roadmap/index.html">Roadmap</a></li>
-                        <li><a data-config="docsUrl" href="../docs/index.html">Docs</a></li>
+                        <li><a data-config="roadmapUrl" href="roadmap/">Roadmap</a></li>
+                        <li><a data-config="docsUrl" href="docs/">Docs</a></li>
                     </ul>
                 </nav>
             </div>

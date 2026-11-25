@@ -10,8 +10,8 @@
 var CONFIG = {
     // Repository used for GitHub links, stats and contributor avatars.
     repoUrl: 'https://github.com/BrixoByte/Owlet',
-    // The Owlet app itself. Relative path works on file:// and GitHub Pages.
-    demoUrl: '../index.html',
+    // The Owlet app itself. Relative path works on file:// and Cloudflare Pages.
+    demoUrl: 'playground/',
     license: 'MIT',
     discussionsUrl: 'https://github.com/BrixoByte/Owlet/discussions',
     issuesUrl: 'https://github.com/BrixoByte/Owlet/issues',
@@ -20,8 +20,8 @@ var CONFIG = {
     codeOfConductUrl: 'https://github.com/BrixoByte/Owlet/blob/main/CODE_OF_CONDUCT.md',
     licenseUrl: 'https://github.com/BrixoByte/Owlet/blob/main/LICENSE',
     // The public roadmap and docs pages. Relative paths work on file:// and Pages.
-    roadmapUrl: '../roadmap/index.html',
-    docsUrl: '../docs/index.html',
+    roadmapUrl: 'roadmap/',
+    docsUrl: 'docs/',
     // Optional screenshots for the hero tiles. Leave empty to use the built-in mocks.
     // Each item: { src: 'assets/hero-1.png', alt: 'Describe the image' }
     heroImages: [],

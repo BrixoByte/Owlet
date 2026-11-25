@@ -1,6 +1,6 @@
 /* ==========================================================================
    roadmap.css — Owlet public roadmap page.
-   Loads after ../landing/css/tokens.css: --canvas, --surface-*, --text-*,
+   Loads after ../css/tokens.css: --canvas, --surface-*, --text-*,
    --accent*, --line*, --radius-*, --space-*, --fs-*, --font-*, --shadow-*,
    --status-ok, --status-soon, --focus-ring are all available.
    Extra statuses (planned, exploring) get local tokens below so the page

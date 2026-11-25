@@ -2,23 +2,22 @@
 
 The Owlet documentation site. Vanilla HTML/CSS/JS — no build step, no
 framework, no fetch() of local files, so it works identically from `file://`
-and GitHub Pages.
+and Cloudflare Pages.
 
 ## Run it
 
-- **Locally**: open `index.html` directly in a browser, or serve the repo root
-  (`python -m http.server 8000` → `http://localhost:8000/docs/`).
-- **Deploy**: it lives inside the main repo, so publishing the repo root on
-  GitHub Pages (`Settings → Pages → deploy from branch → / (root)`) puts the
-  docs at `https://brixobyte.github.io/Owlet/docs/` automatically. Nothing
+- **Locally**: open `site/docs/index.html` directly in a browser, or serve the
+  repo root (`python -m http.server 8000` → `http://localhost:8000/site/docs/`).
+- **Deploy**: it lives inside `site/`, the Cloudflare Pages publish directory,
+  so it ships at `https://owlet.brixobyte.com/docs/` automatically. Nothing
   else to configure.
 
 ## Structure
 
 ```
-docs/
+site/docs/
   index.html            shell: top bar, sidebar, article, TOC, search dialog
-  css/docs.css          docs-only styles (loads ../landing/css/tokens.css first)
+  css/docs.css          docs-only styles (loads ../css/tokens.css first)
   js/docs.js            CONFIG, hash router, block renderer, sidebar, TOC, theme
   js/search.js          client-side search (index built from the same data)
   js/docs-data/*.js     content — one file per sidebar group

@@ -1,6 +1,6 @@
 /* ==========================================================================
    docs.css — Owlet documentation site.
-   Uses the design tokens from ../landing/css/tokens.css (loaded before this
+   Uses the design tokens from ../css/tokens.css (loaded before this
    file): --canvas, --surface-*, --line, --text-*, --accent, --accent-ink,
    --accent-soft, --radius-*, --space-*, --fs-*, --font-*, --shadow-*,
    --focus-ring, --status-ok, --status-soon, --code-*, --syn-*.

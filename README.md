@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/brand/icon-dark.png" alt="Owlet" width="120"></p>
+<p align="center"><img src="site/assets/brand/icon-dark.png" alt="Owlet" width="120"></p>
 
 # Owlet
 
@@ -6,7 +6,7 @@
 
 > Formerly known as DevPad. Made by [BrixoByte](https://github.com/BrixoByte).
 
-[Live Demo](https://brixobyte.github.io/Owlet/) · [Report Bug](https://github.com/BrixoByte/Owlet/issues) · [Request Feature](https://github.com/BrixoByte/Owlet/issues)
+[Live Demo](https://owlet.brixobyte.com/playground/) · [Report Bug](https://github.com/BrixoByte/Owlet/issues) · [Request Feature](https://github.com/BrixoByte/Owlet/issues)
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](../../pulls)
@@ -23,7 +23,7 @@ Owlet is a lightweight, easy-to-use code editor designed specifically for beginn
 - Practice in a beginner-friendly environment
 - Focus on learning without technical setup
 
-![Owlet Interface](assets/screenshot.png)
+![Owlet Interface](site/assets/screenshot.png)
 
 ## Features
 
@@ -54,7 +54,7 @@ API keys are stored only in your browser's `localStorage` and are sent only to t
 ```bash
 git clone https://github.com/BrixoByte/Owlet.git
 cd Owlet
-start index.html   # or just drag index.html into your browser
+start site\playground\index.html   # or just drag it into your browser
 ```
 
 Or serve it (required for the PWA/offline-install features):
@@ -85,9 +85,10 @@ npx serve .        # or python -m http.server
 ## Project Structure
 
 ```
-index.html
-css/style.css        minimal functional styling
-js/
+site/playground/
+  index.html
+  css/style.css      minimal functional styling
+  js/
   app.js             bootstrap + toolbar/status wiring
   state.js           single source of truth (files, tabs, events)
   storage.js         localStorage + File System Access backends
@@ -101,7 +102,10 @@ js/
   terminal.js        xterm.js + pluggable engines
   sandbox.js         BYOK cloud sandbox adapters
   compiler.js        BYOK compiler API adapters
-sw.js, manifest.json PWA/offline support
+  sw.js, manifest.json PWA/offline support
+site/                landing, docs, roadmap, shared assets
+qa/                  Playwright test suite
+project/             internal notes and reports
 ```
 
 ## Keyboard Shortcuts

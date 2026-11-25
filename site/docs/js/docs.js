@@ -12,10 +12,10 @@ window.OwletDocs = window.OwletDocs || { groups: [] };
 /* ---------- CONFIG (edit these once) ---------- */
 var CONFIG = {
     repoUrl: 'https://github.com/BrixoByte/Owlet',
-    docsPath: 'docs',
-    appUrl: '../index.html',
-    landingUrl: '../landing/index.html',
-    roadmapUrl: 'https://github.com/BrixoByte/Owlet/blob/main/project/roadmap.md',
+    docsPath: 'site/docs',
+    appUrl: '../playground/',
+    landingUrl: '../',
+    roadmapUrl: '../roadmap/',
     issuesUrl: 'https://github.com/BrixoByte/Owlet/issues/new',
     version: 'Latest',
     docsVersion: 'Latest',

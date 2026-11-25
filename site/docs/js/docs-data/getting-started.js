@@ -64,7 +64,7 @@ window.OwletDocs.groups.push({
             blocks: [
                 { t: 'h2', x: 'Option 1 — use it online' },
                 { t: 'steps', items: [
-                    { title: 'Open the live demo', text: ['Visit ', { a: 'the hosted Owlet', href: 'https://brixobyte.github.io/Owlet/' }, ' in a modern browser.'] },
+                    { title: 'Open the live demo', text: ['Visit ', { a: 'the hosted Owlet', href: 'https://owlet.brixobyte.com/playground/' }, ' in a modern browser.'] },
                     { title: 'Create a file', text: ['Click the ', { b: 'New file' }, ' button in the Explorer sidebar and name it ', { c: 'index.html' }, '.'] },
                     { title: 'Type and look right', text: 'The live preview renders your page as you type. Linting and suggestions update along the way.' }
                 ] },
@@ -78,7 +78,7 @@ window.OwletDocs.groups.push({
                 { t: 'code', remember: 'os', lang: 'bash', tabs: [
                     { label: 'Windows', lang: 'bash', code: 'git clone https://github.com/BrixoByte/Owlet.git\ncd Owlet\n\n# Option A: just open the file\nstart index.html\n\n# Option B: serve it (needs Python or Node)\npython -m http.server 8000\n# then open http://localhost:8000' },
                     { label: 'macOS', lang: 'bash', code: 'git clone https://github.com/BrixoByte/Owlet.git\ncd Owlet\n\n# Option A: just open the file\nopen index.html\n\n# Option B: serve it (needs Python or Node)\npython3 -m http.server 8000\n# then open http://localhost:8000' },
-                    { label: 'Linux', lang: 'bash', code: 'git clone https://github.com/BrixoByte/Owlet.git\ncd Owlet\n\n# Option A: just open the file\nxdg-open index.html\n\n# Option B: serve it (needs Python or Node)\npython3 -m http.server 8000\n# then open http://localhost:8000' }
+                    { label: 'Linux', lang: 'bash', code: 'git clone https://github.com/BrixoByte/Owlet.git\ncd Owlet\n\n# Option A: just open the file\nxdg-open site/playground/index.html\n\n# Option B: serve it (needs Python or Node)\npython3 -m http.server 8000\n# then open http://localhost:8000/site/playground/' }
                 ] },
                 { t: 'callout', kind: 'note', title: 'No build step', x: ['There is no ', { c: 'npm install' }, ', no bundler and nothing to compile. Libraries like CodeMirror and xterm.js load from pinned CDNs when you are online.'] },
                 { t: 'h2', x: 'Your first project' },
