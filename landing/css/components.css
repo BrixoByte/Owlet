@@ -1,0 +1,182 @@
+/* ==========================================================================
+   components.css - reusable pieces: buttons, badges, chips, cards, tabs,
+   accordion, dropdown pill, dock, copy button, theme toggle, focus rings.
+   ========================================================================== */
+
+/* ---------- focus ---------- */
+/* Visible keyboard focus for every interactive element. */
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; border-radius: var(--radius-xs); }
+
+/* ---------- buttons ---------- */
+/* Base button: 44px min touch target. */
+.btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    min-height: 44px; padding: 0 var(--space-5);
+    border: 1px solid transparent; border-radius: var(--radius-pill);
+    font-size: var(--fs-sm); font-weight: 600; line-height: 1;
+    text-decoration: none; cursor: pointer; white-space: nowrap;
+    transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.btn:active { transform: translateY(1px); }
+.btn svg { width: 18px; height: 18px; flex: 0 0 auto; }
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-secondary { background: transparent; color: var(--text-1); border-color: var(--line-strong); }
+.btn-secondary:hover { background: var(--surface-2); }
+.btn-ghost { background: transparent; color: var(--text-2); }
+.btn-ghost:hover { background: var(--surface-2); color: var(--text-1); }
+.btn-sm { min-height: 36px; padding: 0 var(--space-4); font-size: var(--fs-xs); }
+.btn-icon { width: 44px; padding: 0; }
+.btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }
+
+/* ---------- badges and chips ---------- */
+/* Small status label; "soon" marks features that are not built yet. */
+.badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: var(--radius-pill);
+    border: 1px solid var(--line-strong);
+    font-size: var(--fs-xs); font-weight: 500; color: var(--text-2);
+    white-space: nowrap;
+}
+.badge-ok::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--status-ok); }
+.badge-soon { border-style: dashed; color: var(--status-soon); }
+.badge-soon::before { content: ""; width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--status-soon); }
+.chip-row { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2); }
+
+/* ---------- cards ---------- */
+/* Neutral surface card. */
+.card {
+    background: var(--surface-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-1);
+}
+/* Pastel card: fixed palette colour, dark ink, no border. */
+.pastel {
+    position: relative; overflow: hidden;
+    color: var(--pastel-ink);
+    border-radius: var(--radius-xl);
+    background: var(--pastel-sage);
+}
+.pastel-sage { background: var(--pastel-sage); }
+.pastel-peach { background: var(--pastel-peach); }
+.pastel-lavender { background: var(--pastel-lavender); }
+.pastel-sand { background: var(--pastel-sand); }
+/* ---------- accordion (FAQ) ---------- */
+/* One row per question; the chevron rotates when open. */
+.accordion { border-top: 1px solid var(--line); }
+.accordion-item { border-bottom: 1px solid var(--line); }
+.accordion-trigger {
+    width: 100%; min-height: 56px;
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+    padding: var(--space-4) 0; background: none; border: 0; cursor: pointer;
+    text-align: left; font-size: var(--fs-md); font-weight: 500; color: var(--text-1);
+}
+.accordion-trigger svg { flex: 0 0 auto; width: 20px; height: 20px; transition: transform var(--dur-base) var(--ease-out); }
+.accordion-trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+/* Answer panel: open by default (readable without JS); collapses smoothly
+   via the grid-row trick once JS has enabled the accordion. */
+.accordion-panel {
+    display: grid; grid-template-rows: 1fr;
+    transition: grid-template-rows var(--dur-base) var(--ease-out);
+}
+.accordion-panel > div { overflow: hidden; min-height: 0; }
+.js-enabled .accordion-item:not(.is-open) .accordion-panel { grid-template-rows: 0fr; }
+.accordion-panel p { padding-bottom: var(--space-5); color: var(--text-2); max-width: 720px; }
+
+/* ---------- dropdown pill ---------- */
+/* Trigger pill with a small caret; the menu is a listbox. */
+.pill-dropdown { position: relative; display: inline-block; }
+.pill-trigger {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    min-height: 36px; padding: 0 var(--space-4);
+    background: var(--surface-2); border: 1px solid var(--line-strong);
+    border-radius: var(--radius-pill); cursor: pointer;
+    font-size: var(--fs-sm); font-weight: 500; color: var(--text-1);
+}
+.pill-trigger svg { width: 14px; height: 14px; }
+.pill-menu {
+    position: absolute; top: calc(100% + 6px); left: 0; z-index: 10;
+    min-width: 220px; margin: 0; padding: var(--space-2);
+    background: var(--surface-1); border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md); box-shadow: var(--shadow-3);
+}
+.pill-option {
+    display: block; width: 100%; min-height: 40px; padding: 0 var(--space-3);
+    background: none; border: 0; border-radius: var(--radius-xs);
+    text-align: left; font-size: var(--fs-sm); cursor: pointer; color: var(--text-2);
+}
+.pill-option:hover, .pill-option[aria-selected="true"] { background: var(--surface-2); color: var(--text-1); }
+.pill-option[aria-selected="true"]::before { content: "\2713\00a0"; color: var(--accent-ink); }
+
+/* ---------- dock (icon toolbar) ---------- */
+/* Dark rounded toolbar of icon buttons; the active one gets the accent and a dot. */
+.dock {
+    display: inline-flex; flex-wrap: wrap; justify-content: center; gap: var(--space-1);
+    padding: var(--space-2);
+    background: #0e1014; border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-2);
+}
+.dock-btn {
+    position: relative;
+    width: 44px; height: 44px; display: inline-grid; place-items: center;
+    background: none; border: 0; border-radius: var(--radius-md); cursor: pointer;
+    color: #a7adbb;
+    transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.dock-btn:hover { background: rgba(255, 255, 255, 0.07); color: #e7e9ef; }
+.dock-btn svg { width: 20px; height: 20px; }
+.dock-btn.is-active { color: var(--accent); background: rgba(255, 138, 76, 0.12); }
+.dock-btn.is-active::after {
+    content: ""; position: absolute; bottom: 3px; left: 50%; width: 4px; height: 4px;
+    margin-left: -2px; border-radius: 50%; background: var(--accent);
+}
+.dock-btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+.dock-tip {
+    position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+    padding: 4px 8px; border-radius: var(--radius-xs);
+    background: #0b0c10; color: #e7e9ef; font-size: var(--fs-xs); white-space: nowrap;
+    pointer-events: none; opacity: 0;
+    transition: opacity var(--dur-fast) var(--ease-out);
+}
+.dock-btn:hover .dock-tip, .dock-btn:focus-visible .dock-tip { opacity: 1; }
+
+/* ---------- copy button (code blocks) ---------- */
+/* Small button overlaid on a code block; text changes to "Copied" briefly. */
+.code-block {
+    position: relative;
+    background: var(--code-bg); color: var(--code-text);
+    border-radius: var(--radius-md); border: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: var(--fs-sm);
+}
+.code-block pre { margin: 0; padding: var(--space-4) var(--space-5); overflow-x: auto; }
+.code-block .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    min-height: 32px; padding: 0 var(--space-3);
+    background: rgba(255, 255, 255, 0.08); color: var(--code-text);
+    border: 0; border-radius: var(--radius-xs); cursor: pointer;
+    font-size: var(--fs-xs); font-family: var(--font-sans);
+}
+.code-block .copy-btn:hover { background: rgba(255, 255, 255, 0.16); }
+
+/* ---------- theme toggle ---------- */
+/* Round icon button; the sun/moon glyph is swapped by main.js. */
+.theme-toggle {
+    width: 44px; height: 44px; display: inline-grid; place-items: center;
+    background: transparent; border: 1px solid var(--line-strong); border-radius: var(--radius-pill);
+    cursor: pointer; color: var(--text-1);
+}
+.theme-toggle:hover { background: var(--surface-2); }
+.theme-toggle svg { width: 18px; height: 18px; }
+.theme-toggle .icon-moon { display: none; }
+[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+
+/* ---------- toggle of icon colour and fallback mocks ---------- */
+/* Tiny helper: window dots used on every mock panel. */
+.win-dots { display: inline-flex; gap: 6px; }
+.win-dots span { width: 9px; height: 9px; border-radius: 50%; background: var(--surface-3); }
+.win-dots span:nth-child(1) { background: #ff6b5e; }
+.win-dots span:nth-child(2) { background: #f5c04f; }
+.win-dots span:nth-child(3) { background: #5ccb74; }

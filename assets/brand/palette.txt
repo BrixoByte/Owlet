@@ -1,0 +1,5 @@
+Owlet brand palette
+Orange: #FF8A4C
+Charcoal: #17181c
+Dark background: #0b0b0e
+Off-white: #f5f3ee

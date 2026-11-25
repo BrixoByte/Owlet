@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owlet Roadmap</title>
+    <meta name="description" content="The public roadmap for Owlet — the free, offline-first web IDE. Phases, statuses, dependencies and where you can help. No fixed dates, honest progress.">
+    <link rel="canonical" href="https://brixobyte.github.io/Owlet/roadmap/">
+    <meta name="theme-color" content="#0b0c10">
+    <link rel="icon" type="image/png" href="../assets/brand/icon-dark-32.png" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" href="../assets/brand/icon-light-32.png" media="(prefers-color-scheme: light)">
+    <link rel="apple-touch-icon" href="../assets/brand/icon-180.png">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Owlet Roadmap">
+    <meta property="og:description" content="Where Owlet is going — honest statuses, no fixed dates, open source all the way.">
+    <meta property="og:url" content="https://brixobyte.github.io/Owlet/roadmap/">
+
+    <!-- Apply the saved theme before first paint so there is no flash. -->
+    <script>
+        (function () {
+            // One-time migration: move DevPad-era storage keys to their Owlet names.
+            try {
+                var mig = [];
+                for (var i = 0; i < localStorage.length; i++) mig.push(localStorage.key(i));
+                mig.forEach(function (k) {
+                    if (!k || k.indexOf('devpad') !== 0) return;
+                    var nk = 'owlet' + k.slice(6);
+                    if (localStorage.getItem(nk) === null) localStorage.setItem(nk, localStorage.getItem(k));
+                    localStorage.removeItem(k);
+                });
+            } catch (e) { /* storage blocked */ }
+            try {
+                var p = JSON.parse(localStorage.getItem('owlet:ui:prefs') || '{}');
+                var theme = p.theme || 'system';
+                if (theme === 'system') {
+                    theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+                }
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) { /* keep the dark default */ }
+        })();
+    </script>
+
+    <!-- Same fonts as the app: Inter (UI) and JetBrains Mono (code). -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+    <!-- Shared design tokens, then roadmap-only styles. -->
+    <link rel="stylesheet" href="../landing/css/tokens.css">
+    <link rel="stylesheet" href="css/roadmap.css">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <!-- Screen-reader announcements for filter/result changes. -->
+    <div id="a11y-live" class="sr-only" aria-live="polite" role="status"></div>
+
+    <!-- ============ Top bar (same family as docs site) ============ -->
+    <header class="rm-topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="../landing/index.html" title="Owlet landing page">
+                <img class="brand-mark brand-mark--dark" src="../assets/brand/mark-on-dark-80.png" alt="" width="30" height="32"><img class="brand-mark brand-mark--light" src="../assets/brand/mark-on-light-80.png" alt="" width="32" height="32">
+                <span class="brand-name">Owlet</span>
+                <span class="brand-label">Roadmap</span>
+            </a>
+            <span class="version-pill">Public roadmap · honest statuses</span>
+
+            <nav class="topbar-links" aria-label="Site links">
+                <a href="../landing/index.html">Landing</a>
+                <a href="../docs/index.html">Docs</a>
+                <a class="icon-btn" href="https://github.com/BrixoByte/Owlet" target="_blank" rel="noopener" aria-label="Owlet on GitHub">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.1.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.56 9.56 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.69 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85V21c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" fill="currentColor"/></svg>
+                </a>
+                <button id="btn-theme" class="icon-btn" type="button" aria-label="Toggle light and dark theme" aria-pressed="false">
+                    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5 5l1.6 1.6M17.4 17.4 19 19M19 5l-1.6 1.6M6.6 17.4 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                </button>
+                <a class="btn btn-primary" href="../index.html">Open Owlet</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Site notice: roadmap is still being fleshed out, details may be incomplete. -->
+    <div class="site-notice" role="note">
+        <div class="site-notice-inner">
+            <svg class="site-notice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 3.5 19h17L12 4Zm0 5.5v4m0 2.5v.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p><strong>Under development.</strong> This roadmap is still being fleshed out — some details may be incomplete or incorrect while Owlet is in beta.</p>
+        </div>
+    </div>
+
+    <main id="main" tabindex="-1">
+
+        <!-- ============ 1. HERO ============ -->
+        <section class="hero container" aria-labelledby="page-title">
+            <nav class="crumbs" aria-label="Breadcrumb">
+                <a href="../landing/index.html">Owlet</a>
+                <span aria-hidden="true">/</span>
+                <span aria-current="page">Roadmap</span>
+            </nav>
+            <h1 id="page-title">Where Owlet is going</h1>
+            <p class="lede">
+                Owlet is built in the open, by a small community. There are no fixed
+                dates — phases move when real users need them to move. Everything on
+                this page reflects the code as it exists today: unfinished work is
+                marked honestly, never decorated.
+            </p>
+            <p class="hero-meta">Last updated <time id="last-updated" datetime=""></time></p>
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="https://github.com/BrixoByte/Owlet/issues/new?title=Feature%20idea%3A%20" target="_blank" rel="noopener">Suggest a feature</a>
+                <a class="btn btn-secondary" href="https://github.com/BrixoByte/Owlet" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                    Star on GitHub
+                </a>
+                <a class="btn btn-ghost" href="https://github.com/BrixoByte/Owlet/blob/main/project/roadmap.md" target="_blank" rel="noopener">Read roadmap.md</a>
+            </div>
+        </section>
+
+        <!-- ============ 2. PROGRESS OVERVIEW ============ -->
+        <section class="overview container" aria-labelledby="overview-title">
+            <div class="overview-inner">
+                <div class="overview-bar-row">
+                    <h2 id="overview-title">Overall progress</h2>
+                    <span class="overview-pct" id="overall-pct">0%</span>
+                </div>
+                <div class="progress-track" role="progressbar" aria-labelledby="overview-title" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="overall-track">
+                    <div class="progress-fill" id="overall-fill"></div>
+                </div>
+                <dl class="status-counters" id="status-counters"></dl>
+            </div>
+            <ul class="status-legend" id="status-legend" aria-label="Status legend"></ul>
+        </section>
+
+        <!-- ============ 3. VIEW + FILTER CONTROLS ============ -->
+        <section class="controls container" aria-label="Roadmap views and filters">
+            <div class="controls-top">
+                <div class="view-switch" role="group" aria-label="Choose view">
+                    <button type="button" class="view-btn" data-view="board" aria-pressed="true">Board</button>
+                    <button type="button" class="view-btn" data-view="timeline" aria-pressed="false">Timeline</button>
+                    <button type="button" class="view-btn" data-view="list" aria-pressed="false">List</button>
+                </div>
+                <div class="controls-actions">
+                    <button type="button" class="btn btn-ghost btn-sm" id="btn-export" title="Download the filtered roadmap as Markdown">Export ↓</button>
+                    <button type="button" class="btn btn-ghost btn-sm" id="btn-reset" title="Clear all filters">Reset</button>
+                </div>
+            </div>
+            <div class="controls-filters">
+                <label class="filter-field">
+                    <span>Status</span>
+                    <select id="f-status">
+                        <option value="">All statuses</option>
+                        <option value="done">Done</option>
+                        <option value="in-progress">In progress</option>
+                        <option value="planned">Planned</option>
+                        <option value="exploring">Exploring</option>
+                    </select>
+                </label>
+                <label class="filter-field">
+                    <span>Tag</span>
+                    <select id="f-tag"><option value="">All tags</option></select>
+                </label>
+                <label class="filter-check"><input type="checkbox" id="f-help"> <span>Help wanted</span></label>
+                <label class="filter-check"><input type="checkbox" id="f-first"> <span>Good first issue</span></label>
+                <label class="filter-check"><input type="checkbox" id="f-offline"> <span>Works offline</span></label>
+                <label class="filter-field filter-search">
+                    <span class="sr-only">Search the roadmap</span>
+                    <input type="search" id="f-q" placeholder="Search phases and items…" autocomplete="off">
+                </label>
+            </div>
+            <p class="results-line"><span id="results-count">11 phases</span></p>
+        </section>
+
+        <!-- ============ 4. BOARD ============ -->
+        <section class="board container view-section" id="view-board" aria-label="Now, next and later">
+            <div class="board-grid" id="board-grid"></div>
+        </section>
+
+        <!-- ============ 5. DETAILED TIMELINE ============ -->
+        <section class="timeline container view-section" id="view-timeline" aria-label="Detailed timeline" hidden>
+            <ol class="timeline-list" id="timeline-list"></ol>
+        </section>
+
+        <!-- ============ list view (simple flat list) ============ -->
+        <section class="flat-list container view-section" id="view-list" aria-label="All phases as a list" hidden>
+            <ol class="flat-ol" id="flat-ol"></ol>
+        </section>
+
+        <!-- ============ 6. DEPENDENCY MAP ============ -->
+        <section class="depmap container" aria-labelledby="depmap-title">
+            <h2 id="depmap-title">How the phases connect</h2>
+            <p class="section-sub">Hover or focus a phase to see what it unlocks. Select one to jump to its details.</p>
+            <div class="depmap-box">
+                <svg id="depmap-svg" role="group" aria-label="Dependency diagram of roadmap phases"></svg>
+            </div>
+            <ul class="depmap-fallback" id="depmap-fallback"></ul>
+        </section>
+
+        <!-- ============ 8. HELP WANTED ============ -->
+        <section class="help container" aria-labelledby="help-title">
+            <div class="help-head">
+                <h2 id="help-title">Where help is needed</h2>
+                <a class="btn btn-secondary btn-sm" href="../docs/index.html#/contributing/ways">How to contribute</a>
+            </div>
+            <ul class="help-list" id="help-list"></ul>
+        </section>
+
+        <!-- ============ 9. PRINCIPLES ============ -->
+        <section class="principles container" aria-labelledby="principles-title">
+            <h2 id="principles-title">The rules we build by</h2>
+            <p class="section-sub">These explain why some features are BYOK or optional — the project itself stays free.</p>
+            <div class="principles-grid" id="principles-grid"></div>
+        </section>
+
+        <!-- ============ 10. CHANGELOG ============ -->
+        <section class="changelog container" aria-labelledby="changelog-title">
+            <div class="help-head">
+                <h2 id="changelog-title">Recently shipped</h2>
+                <a class="btn btn-secondary btn-sm" href="../docs/index.html#/reference/changelog">Full changelog</a>
+            </div>
+            <ul class="changelog-list" id="changelog-list"></ul>
+        </section>
+
+        <!-- ============ 11. HOW WE DECIDE ============ -->
+        <section class="decide container" aria-labelledby="decide-title">
+            <h2 id="decide-title">How priorities are set</h2>
+            <div class="decide-grid">
+                <div class="decide-card">
+                    <h3>Users first</h3>
+                    <p>Phases move up when real people hit a wall. A loud, well-described issue beats a neat idea. Vote with 👍 reactions on GitHub issues — there is no separate voting site.</p>
+                    <a href="https://github.com/BrixoByte/Owlet/issues" target="_blank" rel="noopener">Browse issues ↗</a>
+                </div>
+                <div class="decide-card">
+                    <h3>The $0 rule</h3>
+                    <p>Anything that would cost the project money monthly is either client-side, BYOK, or deferred — that is why cloud features are optional and the backend is still an idea.</p>
+                    <a href="../docs/index.html#/reference/roadmap">Status detail in docs</a>
+                </div>
+                <div class="decide-card">
+                    <h3>Suggest an idea</h3>
+                    <p>Copy the template, paste it into a new issue. Good proposals describe the problem, not just the feature.</p>
+                    <div class="idea-row">
+                        <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-idea">Copy idea template</button>
+                        <span class="copy-note" id="idea-copy-note" aria-live="polite"></span>
+                    </div>
+                    <a href="https://github.com/BrixoByte/Owlet/issues/new" target="_blank" rel="noopener">Open a new issue ↗</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============ 12. FOOTER ============ -->
+    <footer class="rm-footer">
+        <div class="container footer-inner">
+            <span>Owlet · MIT License</span>
+            <span class="footer-sep" aria-hidden="true">·</span>
+            <a href="../landing/index.html">Landing</a>
+            <a href="../docs/index.html">Docs</a>
+            <a href="https://github.com/BrixoByte/Owlet" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/BrixoByte/Owlet/discussions" target="_blank" rel="noopener">Discussions</a>
+            <span class="footer-grow"></span>
+            <span>Made with vanilla HTML, CSS and JavaScript.</span>
+            <a href="#top" id="back-to-top">Back to top ↑</a>
+        </div>
+    </footer>
+
+    <!-- No-JS fallback: the phase list still shows (content lives in JS data, so
+         this static summary covers browsers with scripts disabled). -->
+    <noscript>
+        <style>#main{opacity:1 !important}</style>
+        <div class="container noscript-box">
+            <h2>Roadmap summary (scripts disabled)</h2>
+            <ol>
+                <li><strong>Phase 0 — Repo hygiene &amp; demo:</strong> done</li>
+                <li><strong>Phase 1 — Multi-file workspace:</strong> done</li>
+                <li><strong>Phase 2 — Console, linting &amp; suggestions:</strong> done</li>
+                <li><strong>Phase 3 — Python (Pyodide):</strong> done</li>
+                <li><strong>Phase 4 — Terminal panel:</strong> done (local mode)</li>
+                <li><strong>Phase 5 — Cloud sandboxes (BYOK):</strong> in progress — UI ready, backend not connected</li>
+                <li><strong>Phase 6 — Compiler APIs:</strong> in progress — configurable endpoint works</li>
+                <li><strong>Phase 7 — PWA &amp; offline:</strong> done</li>
+                <li><strong>Phase 8 — UI polish:</strong> in progress</li>
+                <li><strong>Phase 9 — Desktop app (Tauri):</strong> planned</li>
+                <li><strong>Phase 10 — Optional backend:</strong> exploring</li>
+            </ol>
+            <p>Full interactive roadmap needs JavaScript — it is generated from one data file so it can never drift from reality. The source of truth is <a href="https://github.com/BrixoByte/Owlet/blob/main/project/roadmap.md">roadmap.md</a>.</p>
+        </div>
+    </noscript>
+
+    <script src="js/roadmap-data.js" defer></script>
+    <script src="js/roadmap.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+/* ==========================================================================
+   tokens.css - every colour, font, space, radius, shadow and motion value.
+   Components and sections read these variables only, so a re-theme is a
+   one-file change. Dark is the default; [data-theme="light"] overrides.
+   ========================================================================== */
+
+:root {
+    /* Fonts (loaded from Google Fonts in index.html).
+       --font-serif is the historical "display" slot — it now resolves to the
+       same Inter stack as the app so every page uses one typeface family. */
+    --font-serif: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+    /* Type scale (fluid headings use clamp in sections.css) */
+    --fs-xs: 0.75rem;
+    --fs-sm: 0.875rem;
+    --fs-base: 1rem;
+    --fs-md: 1.125rem;
+    --fs-lg: 1.25rem;
+    --fs-xl: 1.5rem;
+    --lh-tight: 1.1;
+    --lh-body: 1.6;
+
+    /* Spacing scale */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --space-8: 64px;
+    --space-9: 96px;
+    --section-y: clamp(64px, 9vw, 128px);
+    --container: 1200px;
+    --gutter: clamp(16px, 4vw, 40px);
+
+    /* Radius */
+    --radius-xs: 8px;
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 22px;
+    --radius-xl: 28px;
+    --radius-pill: 999px;
+
+    /* Motion */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-fast: 150ms;
+    --dur-base: 300ms;
+    --dur-slow: 500ms;
+
+    /* Layers */
+    --z-nav: 50;
+    --z-dock: 40;
+
+    /* Pastel cards (same hue in both themes; text on them is always dark) */
+    --pastel-sage: #cfe2d1;
+    --pastel-peach: #f7d2bb;
+    --pastel-lavender: #d9d0f1;
+    --pastel-sand: #ebdcc0;
+    --pastel-ink: #14161d;
+    --pastel-line: rgba(20, 22, 29, 0.18);
+    --paper: #f8f9fc;
+
+    /* Dark theme (neutral charcoal — same palette family as the app) */
+    --canvas: #0b0c10;
+    --surface-1: #121419;
+    --surface-2: #181b22;
+    --surface-3: #1f232c;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --text-1: #e7e9ef;
+    --text-2: #a7adbb;
+    --text-3: #6f7688;
+    --accent: #ff8a4c;
+    --accent-hover: #ff9f66;
+    --accent-ink: #ff8a4c;
+    --accent-soft: rgba(255, 138, 76, 0.16);
+    --accent-glow: rgba(255, 138, 76, 0.45);
+    --on-accent: #1d1108;
+    --focus-ring: #ffc08f;
+    --nav-bg: rgba(11, 12, 16, 0.8);
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --shadow-2: 0 10px 30px rgba(0, 0, 0, 0.35);
+    --shadow-3: 0 24px 60px rgba(0, 0, 0, 0.5);
+    --status-soon: #d9b98f;
+    --status-ok: #3fb980;
+    --code-bg: #0e1014;
+    --code-text: #e7e9ef;
+    --syn-keyword: #f0a27a;
+    --syn-string: #b5d9a8;
+    --syn-tag: #9cc4f0;
+    --wave-stroke: rgba(255, 255, 255, 0.07);
+}
+
+/* Light theme: same tokens, re-mapped to neutral paper (app light palette) */
+[data-theme="light"] {
+    --canvas: #e6e9f0;
+    --surface-1: #f8f9fc;
+    --surface-2: #eef0f5;
+    --surface-3: #e3e6ee;
+    --line: rgba(20, 24, 36, 0.1);
+    --line-strong: rgba(20, 24, 36, 0.2);
+    --text-1: #14161d;
+    --text-2: #3f4555;
+    --text-3: #6a7284;
+    --accent: #ff8a4c;
+    --accent-hover: #ff7a33;
+    --accent-ink: #b4530f;
+    --accent-soft: rgba(255, 138, 76, 0.18);
+    --accent-glow: rgba(255, 138, 76, 0.22);
+    --on-accent: #1d1108;
+    --focus-ring: #b4530f;
+    --nav-bg: rgba(230, 233, 240, 0.85);
+    --shadow-1: 0 1px 2px rgba(20, 24, 36, 0.08);
+    --shadow-2: 0 10px 28px rgba(20, 24, 36, 0.12);
+    --shadow-3: 0 24px 60px rgba(20, 24, 36, 0.18);
+    --status-soon: #8a5a22;
+    --status-ok: #137a4a;
+    --code-bg: #14161d;
+    --code-text: #e7e9ef;
+    --wave-stroke: rgba(20, 24, 36, 0.08);
+}
+
+/* ==========================================================================
+   Custom scrollbars — thin, rounded, theme-aware.
+   Applies to every page that imports this file (landing, docs, roadmap).
+   Chromium/WebKit get styled ::-webkit-scrollbar; Firefox gets
+   scrollbar-width/color. Track stays transparent so it sits on any surface.
+   ========================================================================== */
+
+* { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-corner { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: var(--line-strong);
+    border-radius: var(--radius-pill);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); background-clip: padding-box; }
+::-webkit-scrollbar-thumb:active { background: var(--accent); background-clip: padding-box; }
+
+/* ==========================================================================
+   Site-wide "under development" notice — slim strip shown under the top bar
+   on docs and roadmap while the content is still being written and verified.
+   Uses the honest-amber --status-soon token, matching the roadmap styling.
+   ========================================================================== */
+
+.site-notice {
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-1);
+}
+.site-notice-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 10px var(--space-5, 20px);
+    font-size: var(--fs-sm);
+    line-height: 1.5;
+    color: var(--text-2);
+}
+.site-notice-icon {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    color: var(--status-soon);
+}
+.site-notice p { margin: 0; }
+.site-notice strong { color: var(--status-soon); font-weight: 600; }

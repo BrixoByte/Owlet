@@ -1,0 +1,338 @@
+/* ==========================================================================
+   themes.css — colour tokens for every theme and the
+   custom CodeMirror theme ("owlet") that mirrors the active theme.
+   Switch theme with <html data-theme="dark|light|hc">.
+   The accent is fixed to ember orange.
+   ========================================================================== */
+
+/* ---------- Dark (default) ---------- */
+:root,
+[data-theme="dark"] {
+    color-scheme: dark;
+
+    --surface-0: #0b0c10;        /* deep canvas behind floating panels */
+    --surface-1: #121419;        /* panels: editor, sidebar, dock */
+    --surface-2: #181b22;        /* raised: tab bar, toolbars, rail */
+    --surface-3: #1f232c;        /* inputs, hovered rows */
+    --surface-4: #272c37;        /* popovers, menus, dialogs */
+    --surface-overlay: rgba(4, 5, 8, 0.62);
+
+    --text-1: #e7e9ef;
+    --text-2: #a7adbb;
+    --text-3: #7d8496;
+    --text-disabled: #4f5566;
+    --text-on-accent: #0a0c14;
+    --text-on-status: #0a0c14;       /* text on error/warn fills */
+
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --border: #272c37;
+    --border-strong: #3a4152;
+
+    --state-hover: rgba(255, 255, 255, 0.06);
+    --state-active: rgba(255, 255, 255, 0.1);
+
+    --accent-ember: #ff8a4c;
+    --accent-ember-hover: #ff9f66;
+    --accent-ember-soft: rgba(255, 138, 76, 0.16);
+    --accent-ember-glow: rgba(255, 138, 76, 0.45);
+
+    --success: #3fb980;
+    --success-soft: rgba(63, 185, 128, 0.14);
+    --warn: #e8b04b;
+    --warn-soft: rgba(232, 176, 75, 0.14);
+    --error: #ff6b6b;
+    --error-soft: rgba(255, 107, 107, 0.14);
+    --info: #5fb0ff;
+    --info-soft: rgba(95, 176, 255, 0.14);
+
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-2: 0 4px 14px rgba(0, 0, 0, 0.36), 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-3: 0 18px 44px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.4);
+
+    --scroll-thumb: rgba(255, 255, 255, 0.12);
+    --scroll-thumb-hover: rgba(255, 255, 255, 0.22);
+
+    --syn-keyword: #b48cff;
+    --syn-string: #9fd58b;
+    --syn-number: #f0a46b;
+    --syn-def: #6cb6ff;
+    --syn-tag: #ff7b9c;
+    --syn-attr: #f2c46d;
+    --syn-comment: #6b7385;
+    --syn-builtin: #56d4c5;
+    --syn-meta: #8f98ad;
+
+    --term-bg: #121419;
+    --term-fg: #e7e9ef;
+    --term-cursor: #7d8bff;
+    --term-selection: rgba(125, 139, 255, 0.3);
+    --term-prompt: #7d8bff;
+
+    --preview-canvas: #ffffff;
+}
+
+/* ---------- Light ---------- */
+[data-theme="light"] {
+    color-scheme: light;
+
+    --surface-0: #e6e9f0;
+    --surface-1: #f8f9fc;
+    --surface-2: #eef0f5;
+    --surface-3: #e3e6ee;
+    --surface-4: #ffffff;
+    --surface-overlay: rgba(20, 24, 36, 0.4);
+
+    --text-1: #14161d;
+    --text-2: #3f4555;
+    --text-3: #626a7d;
+    --text-disabled: #9aa1b2;
+    --text-on-accent: #ffffff;
+    --text-on-status: #ffffff;       /* text on error/warn fills */
+
+    --border-subtle: rgba(20, 24, 36, 0.07);
+    --border: #d5d9e3;
+    --border-strong: #b7bdcc;
+
+    --state-hover: rgba(20, 24, 36, 0.05);
+    --state-active: rgba(20, 24, 36, 0.09);
+
+    --accent-ember: #ff8a4c;         /* same orange as the dark theme */
+    --accent-ember-hover: #ff9f66;
+    --accent-ember-soft: rgba(255, 138, 76, 0.14);
+    --accent-ember-glow: rgba(255, 138, 76, 0.35);
+
+    --success: #137a4a;
+    --success-soft: rgba(19, 122, 74, 0.12);
+    --warn: #9a5b00;
+    --warn-soft: rgba(154, 91, 0, 0.12);
+    --error: #c0262d;
+    --error-soft: rgba(192, 38, 45, 0.12);
+    --info: #1d5fbf;
+    --info-soft: rgba(29, 95, 191, 0.12);
+
+    --shadow-1: 0 1px 2px rgba(20, 24, 36, 0.08);
+    --shadow-2: 0 4px 14px rgba(20, 24, 36, 0.1), 0 1px 2px rgba(20, 24, 36, 0.06);
+    --shadow-3: 0 18px 44px rgba(20, 24, 36, 0.18), 0 2px 6px rgba(20, 24, 36, 0.08);
+
+    --scroll-thumb: rgba(20, 24, 36, 0.16);
+    --scroll-thumb-hover: rgba(20, 24, 36, 0.3);
+
+    --syn-keyword: #7a3fd1;
+    --syn-string: #1c7a3a;
+    --syn-number: #b35300;
+    --syn-def: #1d5fbf;
+    --syn-tag: #b3264f;
+    --syn-attr: #9a5b00;
+    --syn-comment: #7b8294;
+    --syn-builtin: #0f7f78;
+    --syn-meta: #5b6376;
+
+    --term-bg: #f8f9fc;
+    --term-fg: #14161d;
+    --term-cursor: #4353e8;
+    --term-selection: rgba(67, 83, 232, 0.2);
+    --term-prompt: #4353e8;
+
+    --preview-canvas: #ffffff;
+}
+
+/* ---------- High contrast ---------- */
+[data-theme="hc"] {
+    color-scheme: dark;
+
+    --surface-0: #000000;
+    --surface-1: #000000;
+    --surface-2: #050505;
+    --surface-3: #111111;
+    --surface-4: #0a0a0a;
+    --surface-overlay: rgba(0, 0, 0, 0.8);
+
+    --text-1: #ffffff;
+    --text-2: #ededed;
+    --text-3: #d4d4d4;
+    --text-disabled: #8a8a8a;
+    --text-on-accent: #000000;
+    --text-on-status: #000000;       /* text on error/warn fills */
+
+    --border-subtle: #3d3d3d;
+    --border: #6b6b6b;
+    --border-strong: #ffffff;
+
+    --state-hover: rgba(255, 255, 255, 0.12);
+    --state-active: rgba(255, 255, 255, 0.2);
+
+    --accent-ember: #ff9f1c;
+    --accent-ember-hover: #ffb14a;
+    --accent-ember-soft: rgba(255, 159, 28, 0.22);
+    --accent-ember-glow: rgba(255, 159, 28, 0.8);
+
+    --success: #5cff9b;
+    --success-soft: rgba(92, 255, 155, 0.18);
+    --warn: #ffd60a;
+    --warn-soft: rgba(255, 214, 10, 0.18);
+    --error: #ff7070;
+    --error-soft: rgba(255, 112, 112, 0.2);
+    --info: #7cc4ff;
+    --info-soft: rgba(124, 196, 255, 0.2);
+
+    --shadow-1: none;
+    --shadow-2: 0 0 0 1px #ffffff;
+    --shadow-3: 0 0 0 2px #ffffff;
+
+    --scroll-thumb: #6b6b6b;
+    --scroll-thumb-hover: #ffffff;
+
+    --syn-keyword: #ff9dff;
+    --syn-string: #b6ff8a;
+    --syn-number: #ffc06b;
+    --syn-def: #7cc4ff;
+    --syn-tag: #ff8ab0;
+    --syn-attr: #ffe066;
+    --syn-comment: #b0b0b0;
+    --syn-builtin: #6fffe9;
+    --syn-meta: #dddddd;
+
+    --term-bg: #000000;
+    --term-fg: #ffffff;
+    --term-cursor: #ffd60a;
+    --term-selection: rgba(255, 214, 10, 0.35);
+    --term-prompt: #ffd60a;
+
+    --preview-canvas: #ffffff;
+}
+
+/* ---------- Accent: fixed ember orange (part of the brand, not a preference) ---------- */
+:root {
+    --accent: var(--accent-ember);
+    --accent-hover: var(--accent-ember-hover);
+    --accent-soft: var(--accent-ember-soft);
+    --accent-glow: var(--accent-ember-glow);
+}
+
+/* Ember on light is a bright orange fill: use dark text on it and a
+   deeper focus ring so both stay readable on light surfaces. */
+[data-theme="light"] {
+    --text-on-accent: #0a0c14;
+    --focus-ring: #b45309;
+}
+
+/* ==========================================================================
+   CodeMirror theme "owlet" — matches the active theme's tokens.
+   editor.js creates CodeMirror with theme 'default'; js/ui/theme.js switches
+   it to 'owlet' at runtime so no logic file needs to change.
+   ========================================================================== */
+.cm-s-owlet.CodeMirror {
+    background: var(--surface-1);
+    color: var(--text-1);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
+    font-variant-ligatures: var(--editor-ligatures);
+}
+.cm-s-owlet .CodeMirror-gutters {
+    background: var(--surface-1);
+    border-right: 1px solid var(--border-subtle);
+}
+.cm-s-owlet .CodeMirror-linenumber { color: var(--text-3); padding: 0 12px 0 8px; }
+.cm-s-owlet .CodeMirror-activeline-background { background: var(--state-hover); }
+.cm-s-owlet .CodeMirror-activeline .CodeMirror-linenumber { color: var(--text-1); }
+.cm-s-owlet .CodeMirror-cursor { border-left: 2px solid var(--accent); }
+.cm-s-owlet .CodeMirror-selected,
+.cm-s-owlet.CodeMirror-focused .CodeMirror-selected { background: var(--accent-soft); }
+.cm-s-owlet .CodeMirror-matchingbracket {
+    color: var(--text-1) !important;
+    background: var(--accent-soft);
+    outline: 1px solid var(--accent);
+}
+.cm-s-owlet .CodeMirror-nonmatchingbracket { color: var(--error); }
+.cm-s-owlet .CodeMirror-foldgutter-open,
+.cm-s-owlet .CodeMirror-foldgutter-folded { color: var(--text-3); cursor: pointer; }
+.cm-s-owlet .CodeMirror-foldgutter-folded:after { content: "\25B8"; }
+.cm-s-owlet .CodeMirror-foldgutter-open:after { content: "\25BE"; }
+.cm-s-owlet .CodeMirror-scroll::-webkit-scrollbar-thumb { background: var(--scroll-thumb); }
+/* CM5's default stylesheet paints these corner/gutter filler squares white —
+   retint them to the editor surface so they blend into the active theme. */
+.cm-s-owlet .CodeMirror-scrollbar-filler,
+.cm-s-owlet .CodeMirror-gutter-filler { background: var(--surface-1); }
+
+.cm-s-owlet span.cm-keyword,
+.cm-s-owlet span.cm-operator.cm-keyword { color: var(--syn-keyword); }
+.cm-s-owlet span.cm-string,
+.cm-s-owlet span.cm-string-2 { color: var(--syn-string); }
+.cm-s-owlet span.cm-number,
+.cm-s-owlet span.cm-atom { color: var(--syn-number); }
+.cm-s-owlet span.cm-def,
+.cm-s-owlet span.cm-variable-2 { color: var(--syn-def); }
+.cm-s-owlet span.cm-variable { color: var(--text-1); }
+.cm-s-owlet span.cm-variable-3,
+.cm-s-owlet span.cm-builtin { color: var(--syn-builtin); }
+.cm-s-owlet span.cm-tag { color: var(--syn-tag); }
+.cm-s-owlet span.cm-attribute,
+.cm-s-owlet span.cm-property { color: var(--syn-attr); }
+.cm-s-owlet span.cm-comment { color: var(--syn-comment); font-style: italic; }
+.cm-s-owlet span.cm-meta,
+.cm-s-owlet span.cm-qualifier { color: var(--syn-meta); }
+.cm-s-owlet span.cm-operator,
+.cm-s-owlet span.cm-bracket { color: var(--text-2); }
+.cm-s-owlet span.cm-error { color: var(--error); }
+.cm-s-owlet span.cm-link { color: var(--info); text-decoration: underline; }
+
+/* CodeMirror popups: hint (autocomplete) and lint tooltips. */
+.CodeMirror-hints {
+    background: var(--surface-4);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-3);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 4px;
+    z-index: var(--z-popover);
+    max-height: 260px;
+}
+.CodeMirror-hint {
+    color: var(--text-2);
+    border-radius: var(--radius-xs);
+    padding: 4px 8px;
+    white-space: pre;
+    cursor: pointer;
+}
+li.CodeMirror-hint-active {
+    background: var(--accent-soft);
+    color: var(--text-1);
+    box-shadow: inset 2px 0 0 var(--accent);
+}
+.CodeMirror-lint-tooltip {
+    background: var(--surface-4);
+    color: var(--text-1);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-3);
+    font-family: var(--font-ui);
+    font-size: 12px;
+    padding: 6px 10px;
+    z-index: var(--z-popover);
+}
+.CodeMirror-lint-mark-error,
+.CodeMirror-lint-marker-error { background-image: none; text-decoration: wavy underline var(--error); }
+.CodeMirror-lint-mark-warning,
+.CodeMirror-lint-marker-warning { background-image: none; text-decoration: wavy underline var(--warn); }
+
+/* ==========================================================================
+   Custom scrollbars — thin, rounded, follows the active theme + accent.
+   Covers the page scrollbar and every scrollable panel (sidebar, editor,
+   dock, dialogs). Firefox gets scrollbar-width/color via the universal rule.
+   ========================================================================== */
+
+* { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-corner { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--radius-pill, 999px);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); background-clip: padding-box; }
+::-webkit-scrollbar-thumb:active { background: var(--accent); background-clip: padding-box; }

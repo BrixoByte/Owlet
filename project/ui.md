@@ -1,4 +1,4 @@
-# DevPad UI Improvement Plan
+# Owlet UI Improvement Plan
 
 ## 1. Visual Identity & Theme System
 - **Define a bolder visual direction**: introduce a neon-infused midnight theme (charcoal base, electric indigo primary, cyan secondary) and a daylight theme (warm gray base, vivid coral accent) to replace the current single dark palette.
@@ -62,4 +62,4 @@
 7. **Polish & animations**: integrate refined loading states, micro-interactions, and onboarding cues.
 
 ---
-This plan keeps DevPad familiar while elevating it into a polished, modern playground for learning front-end development.
+This plan keeps Owlet familiar while elevating it into a polished, modern playground for learning front-end development.

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owlet — Styleguide</title>
+    <link rel="icon" type="image/png" href="../assets/brand/icon-dark-32.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/themes.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body { overflow: auto; height: auto; }
+        .sg-wrap { max-width: 1040px; margin: 0 auto; padding: var(--space-8) var(--space-6); display: flex; flex-direction: column; gap: var(--space-8); }
+        .sg-section h2 { font-size: var(--fs-xl); font-weight: var(--fw-semibold); margin-bottom: var(--space-4); }
+        .sg-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+        .sg-swatch { width: 120px; height: 56px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);
+                     display: flex; align-items: flex-end; padding: var(--space-2); font-size: var(--fs-xs); color: var(--text-2); }
+        .sg-card { background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: var(--space-5); }
+        .sg-controls { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+        .sg-label { color: var(--text-3); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: var(--space-2); }
+    </style>
+</head>
+<body>
+<script>window.Owlet = window.Owlet || {};</script>
+<div class="sg-wrap">
+    <header class="sg-section">
+        <h2>Owlet design system</h2>
+        <p class="sg-label">Tokens, themes, and components. Switch theme below.</p>
+        <div class="sg-row">
+            <div class="btn-group" role="group" aria-label="Theme">
+                <button type="button" data-set-theme="dark">Dark</button>
+                <button type="button" data-set-theme="light">Light</button>
+                <button type="button" data-set-theme="hc">High contrast</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="sg-section">
+        <h2>Colour tokens</h2>
+        <div class="sg-row">
+            <div class="sg-swatch" style="background:var(--surface-0)">surface-0</div>
+            <div class="sg-swatch" style="background:var(--surface-1)">surface-1</div>
+            <div class="sg-swatch" style="background:var(--surface-2)">surface-2</div>
+            <div class="sg-swatch" style="background:var(--surface-3)">surface-3</div>
+            <div class="sg-swatch" style="background:var(--surface-4)">surface-4</div>
+            <div class="sg-swatch" style="background:var(--accent)">accent</div>
+            <div class="sg-swatch" style="background:var(--success)">success</div>
+            <div class="sg-swatch" style="background:var(--warn)">warn</div>
+            <div class="sg-swatch" style="background:var(--error)">error</div>
+            <div class="sg-swatch" style="background:var(--info)">info</div>
+        </div>
+    </section>
+
+    <section class="sg-section">
+        <h2>Buttons</h2>
+        <div class="sg-card sg-row">
+            <button class="btn btn-primary" type="button">Primary</button>
+            <button class="btn btn-secondary" type="button">Secondary</button>
+            <button class="btn btn-ghost" type="button">Ghost</button>
+            <button class="btn btn-danger" type="button">Danger</button>
+            <button class="btn btn-secondary" type="button" disabled>Disabled</button>
+            <button class="btn btn-icon" type="button" aria-label="Settings"><span data-icon="settings"></span></button>
+            <button class="btn btn-icon is-active" type="button" aria-label="Active" aria-pressed="true"><span data-icon="layout"></span></button>
+            <button class="btn btn-secondary btn-sm" type="button">Small</button>
+        </div>
+    </section>
+
+    <section class="sg-section">
+        <h2>Inputs, select, toggle, checkbox</h2>
+        <div class="sg-card sg-row">
+            <input type="text" placeholder="Text input" aria-label="Text input">
+            <input type="password" value="secret" aria-label="Password">
+            <select aria-label="Select"><option>Option one</option><option>Option two</option></select>
+            <label class="switch"><input type="checkbox" checked aria-label="Toggle on"><span></span></label>
+            <label class="switch"><input type="checkbox" aria-label="Toggle off"><span></span></label>
+            <label><input type="checkbox" checked> Checkbox</label>
+        </div>
+    </section>
+
+    <section class="sg-section">
+        <h2>Tabs (tablist)</h2>
+        <div class="sg-card">
+            <div class="tablist" role="tablist">
+                <button role="tab" aria-selected="true" type="button">Console</button>
+                <button role="tab" aria-selected="false" type="button">Terminal</button>
+                <button role="tab" aria-selected="false" type="button">Problems</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="sg-section">
+        <h2>Badges, kbd, tooltip, skeleton</h2>
+        <div class="sg-card sg-row">
+            <span class="badge badge--error">3</span>
+            <span class="badge badge--warn">1</span>
+            <span class="badge badge--info">2</span>
+            <span class="badge badge--accent">New</span>
+            <kbd>Ctrl</kbd><kbd>P</kbd>
+            <button class="btn btn-secondary" type="button" data-tip="A tooltip on hover or focus">Hover me</button>
+            <div class="skeleton" style="width:160px;height:14px"></div>
+        </div>
+    </section>
+
+    <section class="sg-section">
+        <h2>Menu</h2>
+        <div class="sg-card">
+            <div class="menu" style="position:static;width:260px">
+                <div class="menu-title">File</div>
+                <button class="menu-item selected" type="button"><span class="menu-label">New file</span><span class="menu-kbd">Ctrl N</span></button>
+                <button class="menu-item" type="button"><span class="menu-label">Save</span><span class="menu-kbd">Ctrl S</span></button>
+                <div class="menu-sep"></div>
+                <button class="menu-item" type="button" disabled><span class="menu-label">Disabled item</span></button>
+            </div>
+        </div>
+    </section>
+
+    <section class="sg-section">
+        <h2>Empty state</h2>
+        <div class="sg-card">
+            <div class="empty-state">
+                <div class="empty-icon"><span data-icon="folder-open"></span></div>
+                <h4>No project open</h4>
+                <p>Open a folder or start from a template.</p>
+                <button class="btn btn-primary btn-sm" type="button">Open folder</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="sg-section">
+        <h2>Toasts</h2>
+        <div class="sg-card sg-row">
+            <button class="btn btn-secondary" type="button" data-demo-toast="success">Success</button>
+            <button class="btn btn-secondary" type="button" data-demo-toast="info">Info</button>
+            <button class="btn btn-secondary" type="button" data-demo-toast="warn">Warning</button>
+            <button class="btn btn-secondary" type="button" data-demo-toast="error">Error</button>
+        </div>
+    </section>
+
+    <section class="sg-section">
+        <h2>Dialog</h2>
+        <div class="sg-card">
+            <button class="btn btn-primary" type="button" id="sg-open-dialog">Open dialog</button>
+        </div>
+    </section>
+</div>
+
+<div class="dialog" id="sg-dialog" style="display:none">
+    <div class="dialog-box">
+        <h3>Rename file</h3>
+        <label>New name <input type="text" value="index.html"></label>
+        <div class="sg-controls">
+            <button class="btn btn-secondary" type="button" data-close-dialog>Cancel</button>
+            <button class="btn btn-primary" type="button" data-close-dialog>Rename</button>
+        </div>
+    </div>
+</div>
+
+<script src="../js/ui/icons.js"></script>
+<script src="../js/ui/toast.js"></script>
+<script src="../js/ui/menu.js"></script>
+<script src="../js/ui/theme.js"></script>
+<script>
+    // Styleguide-only wiring: no logic modules are loaded on this page.
+    document.addEventListener('DOMContentLoaded', function () {
+        OwletUI.hydrateIcons(document);
+        document.querySelectorAll('[data-set-theme]').forEach(function (b) {
+            b.addEventListener('click', function () { OwletUI.theme.setTheme(b.getAttribute('data-set-theme')); });
+        });
+        document.querySelectorAll('[data-demo-toast]').forEach(function (b) {
+            b.addEventListener('click', function () {
+                OwletUI.toast('This is a ' + b.getAttribute('data-demo-toast') + ' message.', b.getAttribute('data-demo-toast'));
+            });
+        });
+        document.getElementById('sg-open-dialog').addEventListener('click', function () {
+            document.getElementById('sg-dialog').style.display = 'flex';
+        });
+        document.querySelectorAll('[data-close-dialog]').forEach(function (b) {
+            b.addEventListener('click', function () { document.getElementById('sg-dialog').style.display = 'none'; });
+        });
+        OwletUI.theme.apply();
+    });
+</script>
+</body>
+</html>

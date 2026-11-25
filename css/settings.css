@@ -1,0 +1,223 @@
+/* ==========================================================================
+   settings.css — the Settings dialog (lg): header + search, icon nav with
+   group labels, and a fixed-height content area so tabs never jump size.
+   Layout:
+     .settings-box
+       .dlg-head (title + .settings-search + X)
+       .settings-body > .settings-nav (220px) + .settings-content
+   ========================================================================== */
+
+.settings-box { height: min(600px, 90vh); }
+
+/* Search field inside the dialog header. */
+.settings-search {
+    flex: 0 1 260px;
+    min-width: 140px;
+}
+.settings-search .field > input { height: var(--control-h-md); }
+
+/* Nav column + content sit inside a borderless dlg-body. */
+.settings-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+}
+.settings-nav {
+    flex: 0 0 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-3) var(--space-2);
+    border-right: 1px solid var(--border-subtle);
+    overflow-y: auto;
+}
+/* Small-caps group label between nav groups. */
+.settings-nav-group {
+    padding: var(--space-3) var(--space-2) var(--space-1);
+    color: var(--text-3);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.settings-nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: 32px;
+    margin-top: 0;
+    padding: 0 var(--space-2);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-2);
+    font-size: var(--fs-base);
+    text-align: left;
+    cursor: pointer;
+}
+.settings-nav-item .icon { width: 15px; height: 15px; color: var(--text-3); flex: 0 0 auto; }
+.settings-nav-item:hover { background: var(--state-hover); color: var(--text-1); }
+.settings-nav-item.active {
+    background: var(--state-active);
+    color: var(--text-1);
+    font-weight: var(--fw-medium);
+    box-shadow: inset 2px 0 0 var(--accent);
+}
+.settings-nav-item.active .icon { color: var(--accent); }
+
+/* Content: page title + description, then sections that scroll. */
+.settings-content {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    padding: var(--space-5) var(--space-6);
+}
+.settings-panel { display: none; }
+.settings-panel.active { display: block; }
+.settings-panel-title {
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-semibold);
+    margin-bottom: 2px;
+}
+.settings-panel-desc { color: var(--text-3); font-size: var(--fs-sm); margin-bottom: var(--space-5); }
+.settings-panel .set-group + .set-group,
+.settings-panel .settings-section + .settings-section { margin-top: var(--space-4); }
+.settings-section-title {
+    color: var(--text-3);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: var(--space-4) 0 var(--space-2);
+}
+.settings-note { color: var(--text-3); font-size: var(--fs-sm); margin: var(--space-2) 0 0; }
+/* Rows hidden by the settings search. */
+.settings-panel .is-filtered-out { display: none !important; }
+.settings-empty {
+    padding: var(--space-6);
+    text-align: center;
+    color: var(--text-3);
+    font-size: var(--fs-sm);
+    display: none;
+}
+.settings-empty.is-on { display: block; }
+
+/* Accent swatches: fixed brand row (not a preference). */
+.swatch-row { display: flex; gap: var(--space-2); }
+.swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background: var(--swatch-color, var(--accent));
+    position: relative;
+    cursor: default;
+}
+.swatch.is-current {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--surface-1), 0 0 0 4px var(--accent);
+}
+
+/* Theme cards: the fake preview paints surfaces with plain gradients so the
+   cards read "dark / light / hc" without new tokens. */
+.opt-theme { width: 140px; }
+.opt-preview--dark  { background: linear-gradient(180deg, #181b22 0 34%, #0b0c10 34%); }
+.opt-preview--light { background: linear-gradient(180deg, #eef0f5 0 34%, #f8f9fc 34%); }
+.opt-preview--hc    { background: linear-gradient(180deg, #0a0a0a 0 34%, #000 34%); border-color: #fff; }
+.opt-preview--auto  { background: linear-gradient(90deg, #181b22 0 50%, #eef0f5 50%); }
+
+/* About tab: centred identity block. */
+.about-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-6) var(--space-4);
+    text-align: center;
+}
+.about-logo {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-lg);
+    background: var(--accent-soft);
+    color: var(--accent);
+    margin-bottom: var(--space-2);
+}
+.about-logo .icon { width: 26px; height: 26px; }
+.about-name { font-size: var(--fs-lg); font-weight: var(--fw-semibold); }
+.about-meta { color: var(--text-3); font-size: var(--fs-sm); }
+.about-links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2); margin-top: var(--space-4); }
+.about-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+    text-decoration: none;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+}
+.about-links a:hover { color: var(--accent); background: var(--state-hover); }
+.about-links .icon { width: 13px; height: 13px; }
+
+/* ---------- shortcuts list (rendered by js/ui/shortcuts.js) ---------- */
+.shortcut-group-title {
+    padding: var(--space-3) var(--space-4) var(--space-1);
+    color: var(--text-3);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.shortcut-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--fs-base);
+}
+.shortcut-row + .shortcut-row { border-top: 1px solid var(--border-subtle); }
+.shortcut-name { color: var(--text-1); }
+.shortcut-keys { display: inline-flex; align-items: center; flex: 0 0 auto; }
+#shortcut-list {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-2);
+    overflow: hidden;
+}
+#shortcut-list .shortcut-group-title { background: var(--surface-1); }
+/* Two columns when the content is wide enough. */
+@media (min-width: 900px) {
+    #shortcut-list { columns: 2; column-gap: 0; }
+    .shortcut-row, .shortcut-group-title { break-inside: avoid; }
+}
+
+/* ---------- overrides for legacy rules in components.css ---------- */
+.dialog-box .settings-nav-item { margin-top: 0; }
+.settings-content .field-btn { margin-top: 0; }
+.settings-content .help-link,
+.settings-content .btn { margin-top: 0; }
+
+/* Mobile: nav becomes a horizontal strip. */
+@media (max-width: 640px) {
+    .settings-box { height: 85vh; }
+    .settings-body { flex-direction: column; }
+    .settings-nav {
+        flex: 0 0 auto;
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: var(--space-2);
+        border-right: 0;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+    .settings-nav-group { display: none; }
+    .settings-nav-item { flex: 0 0 auto; }
+    .settings-nav-item.active { box-shadow: inset 0 -2px 0 var(--accent); }
+    .settings-content { padding: var(--space-4); }
+    .settings-search { flex: 1; }
+}

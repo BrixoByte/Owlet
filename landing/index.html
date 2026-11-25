@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Owlet: a free, offline code editor in your browser</title>
+    <meta name="description" content="Owlet is a free, open-source, offline-first web IDE. Write HTML, CSS and JavaScript with a real editor and live preview, right in your browser. MIT licensed.">
+    <link rel="canonical" href="https://brixobyte.github.io/Owlet/landing/">
+    <meta name="theme-color" content="#0b0c10">
+    <link rel="icon" type="image/png" href="../assets/brand/icon-dark-32.png" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" href="../assets/brand/icon-light-32.png" media="(prefers-color-scheme: light)">
+    <link rel="apple-touch-icon" href="../assets/brand/icon-180.png">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Owlet: a free, offline code editor in your browser">
+    <meta property="og:description" content="Write HTML, CSS and JavaScript with a real editor and live preview. Free, open source, works offline.">
+    <meta property="og:url" content="https://brixobyte.github.io/Owlet/landing/">
+    <meta property="og:image" content="https://brixobyte.github.io/Owlet/landing/assets/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Owlet: a free, offline code editor in your browser">
+    <meta name="twitter:description" content="Free, open source, works offline. Try it in your browser.">
+    <meta name="twitter:image" content="https://brixobyte.github.io/Owlet/landing/assets/og-image.png">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Owlet",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Any modern web browser",
+        "description": "A free, offline-first web IDE for writing HTML, CSS and JavaScript with a live preview.",
+        "url": "https://brixobyte.github.io/Owlet/",
+        "license": "https://opensource.org/licenses/MIT",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "codeRepository": "https://github.com/BrixoByte/Owlet"
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/sections.css">
+    <link rel="stylesheet" href="css/mock.css">
+    <script>
+        // Set the theme before first paint (dark by default, saved choice wins).
+        (function () {
+            // One-time migration: move DevPad-era storage keys to their Owlet names.
+            try {
+                var mig = [];
+                for (var i = 0; i < localStorage.length; i++) mig.push(localStorage.key(i));
+                mig.forEach(function (k) {
+                    if (!k || k.indexOf('devpad') !== 0) return;
+                    var nk = 'owlet' + k.slice(6);
+                    if (localStorage.getItem(nk) === null) localStorage.setItem(nk, localStorage.getItem(k));
+                    localStorage.removeItem(k);
+                });
+            } catch (e) { /* storage blocked */ }
+            var theme = 'dark';
+            try {
+                var saved = localStorage.getItem('owlet-landing-theme');
+                if (saved === 'light' || saved === 'dark') theme = saved;
+                else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) theme = 'light';
+            } catch (e) { /* storage blocked: keep dark */ }
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+</head>
+<body>
+    <!-- Shared SVG sprite: one icon family (24px grid, 1.8 stroke, round caps). -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <defs>
+            <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+            <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+            <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+            <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+            <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+            <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+            <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="6" cy="19" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 7v10M18 9c0 5-6 4-11 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+            <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+            <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z" fill="currentColor"/></symbol>
+            <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+            <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+            <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+            <symbol id="i-replay" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+            <symbol id="i-editor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 10l-2 2 2 2M15 10l2 2-2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+            <symbol id="i-preview" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 9h18M8 14h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+            <symbol id="i-console" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 10l3 2.5L7 15M13 15h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+            <symbol id="i-split" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 4v16" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+            <symbol id="i-themes" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.9 2-2 0-.6-.3-1-.5-1.4-.2-.4-.4-.8-.4-1.3 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4c0-4.4-4-7.5-9-7.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="7.5" cy="11" r="1.1" fill="currentColor"/><circle cx="11" cy="7.5" r="1.1" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.1" fill="currentColor"/></symbol>
+            <symbol id="i-terminal" viewBox="0 0 24 24"><path d="M4 6l6 6-6 6M12 18h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+            <symbol id="i-python" viewBox="0 0 24 24"><path d="M12 3c-3 0-4 1-4 3v2h4v1H6c-2 0-3 1.5-3 4s1 4 3 4h2v-2.5c0-1.7 1.3-3 3-3h4c1.5 0 2-1 2-2V6c0-1.5-1.5-3-2-3zM9 5.5h.01M12 21c3 0 4-1 4-3v-2h-4v-1h6c2 0 3-1.5 3-4s-1-4-3-4h-2v2.5c0 1.7-1.3 3-3 3h-4c-1.5 0-2 1-2 2V18c0 1.5 1.5 3 2 3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+            <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+            <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 4.5h11a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z M5 17a3 3 0 0 1 3-3h11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+            <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+            <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+            <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+            <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+            <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+            <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+            <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+        </defs>
+    </svg>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-nav" id="site-nav">
+        <div class="container nav-row">
+            <a class="brand" href="#top" aria-label="Owlet home">
+                <img class="brand-mark brand-mark--dark" src="../assets/brand/mark-on-dark-80.png" alt="" width="34" height="36"><img class="brand-mark brand-mark--light" src="../assets/brand/mark-on-light-80.png" alt="" width="36" height="36">
+                <span>Owlet</span>
+            </a>
+            <button class="btn btn-ghost btn-icon nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu">
+                <svg aria-hidden="true"><use href="#i-menu"/></svg>
+            </button>
+            <div class="nav-menu" id="nav-menu">
+                <nav class="nav-links" aria-label="Primary">
+                    <a class="nav-link btn btn-ghost btn-sm" href="#product">Product</a>
+                    <a class="nav-link btn btn-ghost btn-sm" href="#features">Features</a>
+                    <a class="nav-link btn btn-ghost btn-sm" href="#open-source">Open Source</a>
+                    <a class="nav-link btn btn-ghost btn-sm" href="#faq">FAQ</a>
+                    <a class="nav-link btn btn-ghost btn-sm" data-config="roadmapUrl" href="https://github.com/BrixoByte/Owlet/blob/main/project/roadmap.md" target="_blank" rel="noopener">Roadmap</a>
+                    <a class="nav-link btn btn-ghost btn-sm" data-config="docsUrl" href="https://github.com/BrixoByte/Owlet/blob/main/README.md" target="_blank" rel="noopener">Docs</a>
+                </nav>
+            </div>
+            <div class="nav-actions">
+                <a class="btn btn-secondary btn-sm" data-config="repoUrl" href="https://github.com/BrixoByte/Owlet" target="_blank" rel="noopener">
+                    <svg aria-hidden="true"><use href="#i-branch"/></svg>
+                    <span class="btn-star-label">GitHub</span>
+                    <span class="badge" id="nav-stars" aria-live="polite">&#8212;</span>
+                </a>
+                <a class="btn btn-primary btn-sm" data-config="demoUrl" href="../index.html">Try Owlet</a>
+                <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light theme">
+                    <svg class="icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
+                    <svg class="icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="sub-bar">
+            <div class="container">
+                <span>Product</span>
+                <span aria-hidden="true">/</span>
+                <span>Overview</span>
+                <a class="sub-link" data-config="docsUrl" href="https://github.com/BrixoByte/Owlet/blob/main/README.md" target="_blank" rel="noopener">Read the docs &rarr;</a>
+            </div>
+        </div>
+    </header>
+
+    <main id="main">
+        <!-- 1. HERO: headline, CTAs, floating mock tiles and a looping demo window. -->
+        <section class="hero" id="product" aria-labelledby="hero-title">
+            <div class="hero-tiles" aria-hidden="true">
+                <div class="float-tile tile-a" data-float="1">
+                    <div class="mock-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="mock-label">app.js</span></div>
+                    <div class="mock-body mock-code"><span class="k">const</span> total = <span class="n">24</span>;<br><span class="k">function</span> greet() {<br>&nbsp;&nbsp;<span class="s">"hi"</span></div>
+                </div>
+                <div class="float-tile tile-b" data-float="2">
+                    <div class="mock-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="mock-label">Preview</span></div>
+                    <div class="mock-body mock-preview"><span class="mock-block"></span><span class="mock-line w80"></span><span class="mock-line w60"></span><span class="mock-pill"></span></div>
+                </div>
+                <div class="float-tile tile-c" data-float="3">
+                    <div class="mock-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="mock-label">Console</span></div>
+                    <div class="mock-body mock-console"><span>&gt; ready</span><span>&gt; saved index.html</span><span class="warn">&gt; 1 warning</span></div>
+                </div>
+                <div class="float-tile tile-d" data-float="4">
+                    <div class="mock-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="mock-label">Files</span></div>
+                    <div class="mock-body mock-tree"><span>index.html</span><span>style.css</span><span>script.js</span><span class="dim">assets/</span></div>
+                </div>
+                <div class="float-tile tile-e" data-float="5">
+                    <div class="mock-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="mock-label">Theme</span></div>
+                    <div class="mock-body mock-swatches"><span style="background:#0b0c10"></span><span style="background:#ff8a4c"></span><span style="background:#cfe2d1"></span><span style="background:#d9d0f1"></span></div>
+                </div>
+                <div class="float-tile tile-f" data-float="6">
+                    <div class="mock-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="mock-label">Files</span></div>
+                    <div class="mock-body mock-split"><span class="mock-line w90"></span><span class="mock-line w70"></span><span class="mock-line w80"></span></div>
+                </div>
+            </div>
+
+            <div class="container hero-inner">
+                <p class="eyebrow hero-eyebrow" data-reveal>v0.1 beta · Free, open source, runs in your browser</p>
+                <h1 id="hero-title" class="hero-title" data-reveal>A real code editor, right inside your browser tab.</h1>
+                <p class="hero-lead" data-reveal>Write HTML, CSS and JavaScript across a multi-file workspace, with a live preview that updates as you type. Nothing to install, and it keeps working when you go offline.</p>
+                <div class="hero-cta" data-reveal>
+                    <a class="btn btn-primary" data-config="demoUrl" href="../index.html">Open Owlet <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+                    <a class="btn btn-secondary" data-config="repoUrl" href="https://github.com/BrixoByte/Owlet" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-branch"/></svg>View on GitHub</a>
+                </div>
+                <ul class="chip-row hero-chips" data-reveal aria-label="Highlights">
+                    <li class="badge badge-ok">MIT licensed</li>
+                    <li class="badge badge-ok">Works offline</li>
+                    <li class="badge badge-ok">No sign-up</li>
+                </ul>
+
+                <div class="demo-window" data-reveal aria-label="Looping demo of Owlet">
+                    <div class="demo-bar">
+                        <span class="win-dots"><span></span><span></span><span></span></span>
+                        <span class="demo-tab">index.html</span>
+                        <button class="btn btn-ghost btn-sm demo-toggle" id="demo-toggle" type="button" aria-pressed="false">
+                            <svg aria-hidden="true"><use href="#i-pause"/></svg><span>Pause</span>
+                        </button>
+                    </div>
+                    <div class="demo-body">
+                        <div class="demo-editor">
+                            <pre class="demo-code"><code id="demo-code">&lt;main class="card"&gt;
+  &lt;h3&gt;Hello, Owlet&lt;/h3&gt;
+  &lt;p&gt;Edit the code, then watch this preview update.&lt;/p&gt;
+  &lt;button&gt;Try it&lt;/button&gt;
+&lt;/main&gt;</code><span class="demo-caret" aria-hidden="true"></span></pre>
+                        </div>
+                        <div class="demo-preview" aria-label="Live preview">
+                            <h3 data-after="1" class="demo-h3">Hello, Owlet</h3>
+                            <p data-after="2" class="demo-p">Edit the code, then watch this preview update.</p>
+                            <span data-after="3" class="demo-btn">Try it</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-points" data-reveal>
+                    <div class="point"><span class="point-num">01</span><h3>Write</h3><p>Create files and folders, then edit them in a real CodeMirror editor.</p></div>
+                    <div class="point"><span class="point-num">02</span><h3>Preview</h3><p>See changes in the live preview as you type, at phone, tablet and desktop sizes.</p></div>
+                    <div class="point"><span class="point-num">03</span><h3>Share</h3><p>Host the project folder on any static server, GitHub Pages included. There is no account to set up.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. DAY TIMELINE SHOWCASE: four slides driven by native scroll (sticky on desktop, stacked elsewhere). -->
+        <section class="section showcase-section" id="features" aria-labelledby="showcase-title">
+            <div class="container">
+                <header class="section-head" data-reveal>
+                    <p class="eyebrow">Features in a day</p>
+                    <h2 id="showcase-title">From the first line to a shared preview</h2>
+                    <p>Scroll through a typical session. Each step shows one part of Owlet at work.</p>
+                </header>
+            </div>
+
+            <div class="showcase-track" id="showcase-track">
+                <div class="showcase-sticky">
+                    <div class="container showcase-layout">
+                        <aside class="time-ruler" aria-hidden="true">
+                            <div class="ruler-line"><span class="ruler-fill" id="ruler-fill"></span><span class="ruler-dot" id="ruler-dot"></span></div>
+                            <ol class="ruler-ticks">
+                                <li data-tick="0">9AM</li>
+                                <li data-tick="1">11AM</li>
+                                <li data-tick="2">1PM</li>
+                                <li data-tick="3">3PM</li>
+                                <li data-tick="4">5PM</li>
+                            </ol>
+                        </aside>
+
+                        <div class="showcase-main">
+                            <div class="pill-dropdown showcase-pill">
+                                <button class="pill-trigger" id="slide-pill" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="slide-menu">
+                                    <span id="slide-pill-label">9AM — first file</span>
+                                    <svg aria-hidden="true"><use href="#i-chevron"/></svg>
+                                </button>
+                                <ul class="pill-menu" id="slide-menu" role="listbox" aria-label="Choose a moment" hidden>
+                                    <li class="pill-option" role="option" tabindex="-1" aria-selected="true" data-option="0">9AM — first file</li>
+                                    <li class="pill-option" role="option" tabindex="-1" aria-selected="false" data-option="1">11AM — fix the error</li>
+                                    <li class="pill-option" role="option" tabindex="-1" aria-selected="false" data-option="2">1PM — every screen</li>
+                                    <li class="pill-option" role="option" tabindex="-1" aria-selected="false" data-option="3">5PM — tabs and styles</li>
+                                </ul>
+                            </div>
+
+                            <div class="showcase-stage" id="showcase-stage">
+                                <article class="slide" data-index="0" data-audience="9AM — first file" data-feature="editor" aria-roledescription="slide" aria-label="1 of 4">
+                                    <div class="slide-copy">
+                                        <h3 class="slide-title">A blank file becomes a page</h3>
+                                        <p class="muted">Create index.html, type the markup, and the preview answers back on the same screen. No server, no tab-switching.</p>
+                                        <p class="muted">Start in the <a class="ul-link" data-config="demoUrl" href="../index.html">Owlet workspace</a>.</p>
+                                    </div>
+                                    <div class="slide-visual">
+                                        <div class="stack-card pastel pastel-sage">
+                                            <div class="slide-mock" data-slide-scene="0">
+                                                <div class="code-block"><pre><code>&lt;main&gt;
+  &lt;h1&gt;Hello, Owlet&lt;/h1&gt;
+  &lt;p&gt;My first page, live.&lt;/p&gt;
+&lt;/main&gt;</code></pre></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+
+                                <article class="slide" data-index="1" data-audience="11AM — fix the error" data-feature="console" aria-roledescription="slide" aria-label="2 of 4">
+                                    <div class="slide-copy">
+                                        <h3 class="slide-title">The console catches what breaks</h3>
+                                        <p class="muted">A TypeError names the file and the line that failed. Fix the code, and the red clears on the next run.</p>
+                                        <p class="muted">Toggle the panel with Ctrl+J — <a class="ul-link" data-config="docsUrl" href="../docs/index.html">details in the docs</a>.</p>
+                                    </div>
+                                    <div class="slide-visual">
+                                        <div class="stack-card pastel pastel-peach">
+                                            <div class="slide-mock" data-slide-scene="1">
+                                                <div class="code-block"><pre><code>const price = cart.total;
+console.log(price);
+// TypeError: Cannot read 'total' of undefined</code></pre></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+
+                                <article class="slide" data-index="2" data-audience="1PM — every screen" data-feature="preview" aria-roledescription="slide" aria-label="3 of 4">
+                                    <div class="slide-copy">
+                                        <h3 class="slide-title">One page, three widths</h3>
+                                        <p class="muted">The preview frame switches desktop, tablet and phone without leaving the project. The nav that fit at noon still has to fit at phone width.</p>
+                                        <p class="muted">More on <a class="ul-link" data-config="docsUrl" href="../docs/index.html">preview presets in the docs</a>.</p>
+                                    </div>
+                                    <div class="slide-visual">
+                                        <div class="stack-card pastel pastel-lavender">
+                                            <div class="slide-mock" data-slide-scene="2">
+                                                <div class="code-block"><pre><code>.nav {
+  display: flex;
+  gap: 24px;
+}</code></pre></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+
+                                <article class="slide" data-index="3" data-audience="5PM — tabs and styles" data-feature="split" aria-roledescription="slide" aria-label="4 of 4">
+                                    <div class="slide-copy">
+                                        <h3 class="slide-title">Markup and styles, in one project</h3>
+                                        <p class="muted">Open index.html and style.css as tabs in the same workspace. The class name you type in the markup is the one you style, and the preview shows both at once.</p>
+                                        <p class="muted">Try it yourself in <a class="ul-link" data-config="demoUrl" href="../index.html">Owlet</a>.</p>
+                                    </div>
+                                    <div class="slide-visual">
+                                        <div class="stack-card pastel pastel-sand">
+                                            <div class="slide-mock" data-slide-scene="3">
+                                                <div class="code-block"><pre><code>.card {
+  padding: 20px;
+  border-radius: 12px;
+}</code></pre></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+
+                            <div class="showcase-controls">
+                                <div class="showcase-actions">
+                                    <a class="btn btn-secondary btn-sm" data-config="demoUrl" href="../index.html"><svg aria-hidden="true"><use href="#i-arrow"/></svg>Try this in Owlet</a>
+                                    <button class="btn btn-ghost btn-sm" id="slide-replay" type="button"><svg aria-hidden="true"><use href="#i-replay"/></svg>Replay</button>
+                                </div>
+                                <div class="dock" role="toolbar" aria-label="Features">
+                                    <button class="dock-btn" type="button" data-feature-btn="editor" data-slide="0" aria-label="Editor"><svg aria-hidden="true"><use href="#i-editor"/></svg><span class="dock-tip" aria-hidden="true">Editor</span></button>
+                                    <button class="dock-btn" type="button" data-feature-btn="preview" data-slide="2" aria-label="Preview"><svg aria-hidden="true"><use href="#i-preview"/></svg><span class="dock-tip" aria-hidden="true">Preview</span></button>
+                                    <button class="dock-btn" type="button" data-feature-btn="console" data-slide="1" aria-label="Console"><svg aria-hidden="true"><use href="#i-console"/></svg><span class="dock-tip" aria-hidden="true">Console</span></button>
+                                    <button class="dock-btn" type="button" data-feature-btn="themes" data-slide="2" aria-label="Themes"><svg aria-hidden="true"><use href="#i-themes"/></svg><span class="dock-tip" aria-hidden="true">Themes</span></button>
+                                    <button class="dock-btn" type="button" data-feature-btn="terminal" aria-disabled="true" aria-label="Terminal, coming soon"><svg aria-hidden="true"><use href="#i-terminal"/></svg><span class="dock-tip" aria-hidden="true">Terminal (coming soon)</span></button>
+                                    <button class="dock-btn" type="button" data-feature-btn="python" aria-disabled="true" aria-label="Python, coming soon"><svg aria-hidden="true"><use href="#i-python"/></svg><span class="dock-tip" aria-hidden="true">Python (coming soon)</span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. COMMUNITY QUOTE: real quotes from CONFIG, or a discussions invitation. -->
+        <section class="section community" aria-label="Community">
+            <div class="container community-grid">
+                <div class="pastel pastel-lavender community-visual" data-reveal>
+                    <div class="mini-editor" aria-hidden="true">
+                        <div class="mock-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="mock-label">community.md</span></div>
+                        <div class="mini-editor-body">
+                            <span><span class="k">Share</span> your idea</span>
+                            <span><span class="k">Build</span> it in Owlet</span>
+                            <span><span class="k">Ship</span> it on GitHub Pages</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="community-copy" data-reveal>
+                    <p class="eyebrow">Community</p>
+                    <div id="testimonial" class="testimonial">
+                        <blockquote class="quote" id="quote-text">
+                            <p>What would you build with a free editor that works offline?</p>
+                        </blockquote>
+                        <p class="quote-meta muted" id="quote-meta">Join the conversation on GitHub Discussions.</p>
+                        <div class="quote-controls" id="quote-controls" hidden>
+                            <button class="btn btn-secondary btn-icon" id="quote-prev" type="button" aria-label="Previous quote"><svg aria-hidden="true" style="transform: rotate(90deg)"><use href="#i-chevron"/></svg></button>
+                            <button class="btn btn-secondary btn-icon" id="quote-next" type="button" aria-label="Next quote"><svg aria-hidden="true" style="transform: rotate(-90deg)"><use href="#i-chevron"/></svg></button>
+                        </div>
+                    </div>
+                    <a class="btn btn-primary" data-config="discussionsUrl" href="https://github.com/BrixoByte/Owlet/discussions" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-chat"/></svg>Share your story on GitHub Discussions</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. THREE COLUMNS: why the approach is different. -->
+        <section class="section" id="principles" aria-labelledby="principles-title">
+            <div class="container">
+                <header class="section-head" data-reveal>
+                    <p class="eyebrow">Why Owlet</p>
+                    <h2 id="principles-title">Change the way you work</h2>
+                </header>
+                <div class="three-col" data-reveal>
+                    <article class="col">
+                        <span class="col-num">01</span>
+                        <h3>No install needed</h3>
+                        <p class="muted">Open the page and start typing. There is no package manager, no build step and no account to create.</p>
+                    </article>
+                    <article class="col">
+                        <span class="col-num">02</span>
+                        <h3>Your code stays on your device</h3>
+                        <p class="muted">Your project lives in the browser on your machine. Owlet does not send your files to a server.</p>
+                    </article>
+                    <article class="col">
+                        <span class="col-num">03</span>
+                        <h3>Learn from readable code</h3>
+                        <p class="muted">The whole project is plain HTML, CSS and JavaScript, so you can read it, change it and learn from it.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. CAPABILITY BENTO: six working features, each with a tiny live
+             visual you can trigger with hover or keyboard focus. -->
+        <section class="section capability" id="capabilities" aria-labelledby="capability-title">
+            <div class="container">
+                <header class="section-head" data-reveal>
+                    <p class="eyebrow">Capabilities</p>
+                    <h2 id="capability-title">See what Owlet can do</h2>
+                    <p>Six things that work today. Hover or focus a tile to see it move — planned features are listed separately below.</p>
+                </header>
+                <ul class="bento" data-reveal>
+                    <li class="bento-cell b-files" tabindex="0">
+                        <div class="bento-copy">
+                            <h3>Multi-file workspace</h3>
+                            <p>One project holds your HTML, CSS, JS and assets — folders nest and expand.</p>
+                        </div>
+                        <div class="mini-tree" aria-hidden="true">
+                            <span class="mt-item mt-open">index.html</span>
+                            <span class="mt-item">style.css</span>
+                            <span class="mt-item">app.js</span>
+                            <span class="mt-item mt-dir">assets/</span>
+                            <span class="mt-kids"><span class="mt-item mt-kid">logo.svg</span><span class="mt-item mt-kid">fonts.css</span></span>
+                        </div>
+                    </li>
+                    <li class="bento-cell b-preview" tabindex="0">
+                        <div class="bento-copy">
+                            <h3>Live preview + devices</h3>
+                            <p>Desktop, tablet and phone frames — one click each.</p>
+                        </div>
+                        <div class="mini-frame" aria-hidden="true"><div class="mf-screen"><span class="mf-h"></span><span class="mf-p"></span><span class="mf-b"></span></div></div>
+                    </li>
+                    <li class="bento-cell b-console" tabindex="0">
+                        <div class="bento-copy">
+                            <h3>Console with detail</h3>
+                            <p>Errors name the file and line — inspect them in place.</p>
+                        </div>
+                        <div class="mini-console" aria-hidden="true">
+                            <span class="mc-row mc-err">TypeError: null (app.js:3)</span>
+                            <span class="mc-detail"><code>btn.addEventListener("click", send);</code><em>btn is null — check the selector</em></span>
+                        </div>
+                    </li>
+                    <li class="bento-cell b-split" tabindex="0">
+                        <div class="bento-copy">
+                            <h3>Tabs for every file</h3>
+                            <p>Open several files as tabs, switch between them, and see the whole project in the live preview.</p>
+                        </div>
+                        <div class="mini-split" aria-hidden="true"><span class="ms-pane"><i></i><i></i><i></i></span><span class="ms-pane"><i></i><i></i></span></div>
+                    </li>
+                    <li class="bento-cell b-themes" tabindex="0">
+                        <div class="bento-copy">
+                            <h3>Light and dark themes</h3>
+                            <p>One toggle flips the whole workspace.</p>
+                        </div>
+                        <div class="mini-win" aria-hidden="true"><span class="mw-bar"></span><span class="mw-body"><i></i><i></i></span></div>
+                    </li>
+                    <li class="bento-cell b-offline" tabindex="0">
+                        <div class="bento-copy">
+                            <h3>Works offline</h3>
+                            <p>A service worker keeps Owlet opening without a connection — after the first load.</p>
+                        </div>
+                        <div class="mini-off" aria-hidden="true"><span class="mo-dot"></span><span class="mo-text">online</span></div>
+                    </li>
+                </ul>
+                <p class="soon-strip" data-reveal>
+                    <span class="badge badge-soon">Planned</span>
+                    <span class="muted">On the roadmap: AI assistant &middot; Terminal &middot; Git sync &middot; Cloud sandbox &middot; Python</span>
+                    <a href="../roadmap/index.html">See the roadmap<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+                </p>
+            </div>
+        </section>
+
+        <!-- 7. ROLE + TASK SELECTOR: "I am a ___ and I need to ___".
+             The underlined words open real listbox dropdowns; the scene below
+             shows that exact moment inside Owlet (js/scenes.js). -->
+        <section class="section selector" aria-labelledby="selector-title">
+            <div class="container">
+                <header class="section-head" data-reveal>
+                    <p class="eyebrow">Find your fit</p>
+                    <h2 id="selector-title">I am a&nbsp;<span class="pick"><button class="inline-pick" type="button" id="pick-role" aria-haspopup="listbox" aria-expanded="false" aria-controls="role-menu"><span id="role-value">Student</span><svg aria-hidden="true"><use href="#i-chevron"/></svg></button><ul class="pick-menu" id="role-menu" role="listbox" aria-label="Choose a role" hidden></ul></span> and I need to&nbsp;<span class="pick"><button class="inline-pick" type="button" id="pick-task" aria-haspopup="listbox" aria-expanded="false" aria-controls="task-menu"><span id="task-value">fix a JavaScript error</span><svg aria-hidden="true"><use href="#i-chevron"/></svg></button><ul class="pick-menu" id="task-menu" role="listbox" aria-label="Choose a task" hidden></ul></span></h2>
+                    <p>Pick a role and a task. The scene below is what that moment looks like inside Owlet.</p>
+                </header>
+                <div class="selector-scene" id="selector-scene" data-reveal>
+                    <div class="selector-steps" aria-live="polite">
+                        <h3 id="sel-heading">Fix a JavaScript error</h3>
+                        <ol class="sel-step-list" id="sel-steps">
+                            <li>Open the project and read the red line in the console panel.</li>
+                            <li>Declare <code>user</code> above the line that uses it, then press <kbd>Ctrl+S</kbd>.</li>
+                            <li>The error clears and the preview shows the greeting.</li>
+                        </ol>
+                        <a class="btn btn-primary" data-config="demoUrl" href="../index.html">Open Owlet<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+                    </div>
+                    <div class="selector-mock" id="selector-mock">
+                        <!-- Static fallback for no-JS: the default scene as real code. -->
+                        <div class="sel-fallback">
+                            <div class="code-block"><pre><code>// app.js
+console.log(user.name);  // ReferenceError: user is not defined</code></pre></div>
+                            <p class="muted sel-fallback-note">Fix: add <code>const user = { name: "Sara" };</code> — the console error clears.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. OPEN SOURCE: license message, live stats (with fallbacks), contribution steps and contributors. -->
+        <section class="section open-source" id="open-source" aria-labelledby="oss-title">
+            <div class="container">
+                <header class="section-head" data-reveal>
+                    <p class="eyebrow">Open source</p>
+                    <h2 id="oss-title">Free to use, fork and ship under MIT</h2>
+                    <p>Use Owlet, change it, and ship your own version, including in commercial work. The MIT license only asks that the copyright notice stays with the copies.</p>
+                </header>
+
+                <dl class="stat-row" data-reveal aria-label="Repository statistics">
+                    <div class="stat"><dt>Stars</dt><dd id="stat-stars">&#8212;</dd></div>
+                    <div class="stat"><dt>Forks</dt><dd id="stat-forks">&#8212;</dd></div>
+                    <div class="stat"><dt>Open issues</dt><dd id="stat-issues">&#8212;</dd></div>
+                    <div class="stat"><dt>Contributors</dt><dd id="stat-contributors">&#8212;</dd></div>
+                </dl>
+                <p class="stat-note muted" data-reveal>Live numbers from GitHub, cached for an hour. If GitHub cannot be reached, dashes are shown instead.</p>
+
+                <h3 class="sub-heading" data-reveal>How to contribute</h3>
+                <ol class="stepper" data-reveal>
+                    <li><h4>Fork</h4><p>Create your own copy of the repository on GitHub.</p></li>
+                    <li><h4>Clone</h4><p>Download it to your computer.</p>
+                        <div class="code-block"><pre><code id="clone-cmd">git clone https://github.com/BrixoByte/Owlet.git</code></pre><button class="copy-btn" type="button">Copy</button></div>
+                    </li>
+                    <li><h4>Change something</h4><p>No build step. Open <span class="mono">index.html</span> in your browser and start editing.</p></li>
+                    <li><h4>Open a pull request</h4><p>Describe what you changed and why. A maintainer will review it.</p></li>
+                </ol>
+
+                <h3 class="sub-heading" data-reveal>Ways to help</h3>
+                <ul class="help-list" data-reveal>
+                    <li><a class="help-row" href="https://github.com/BrixoByte/Owlet/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22" target="_blank" rel="noopener"><span class="help-ico"><svg aria-hidden="true"><use href="#i-star"/></svg></span><span><strong>Good first issues</strong><span class="muted">Small, clearly described tasks for a first pull request.</span></span><svg class="help-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+                    <li><a class="help-row" data-config="issuesUrl" href="https://github.com/BrixoByte/Owlet/issues/new" target="_blank" rel="noopener"><span class="help-ico"><svg aria-hidden="true"><use href="#i-bolt"/></svg></span><span><strong>Report a bug</strong><span class="muted">What broke, what you expected, and how to repeat it.</span></span><svg class="help-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+                    <li><a class="help-row" data-config="discussionsUrl" href="https://github.com/BrixoByte/Owlet/discussions" target="_blank" rel="noopener"><span class="help-ico"><svg aria-hidden="true"><use href="#i-chat"/></svg></span><span><strong>Suggest a feature</strong><span class="muted">Share an idea in Discussions so others can weigh in.</span></span><svg class="help-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+                    <li><a class="help-row" data-config="docsUrl" href="../docs/index.html"><span class="help-ico"><svg aria-hidden="true"><use href="#i-book"/></svg></span><span><strong>Improve the docs</strong><span class="muted">Clarify a sentence, fix a typo, or add an example.</span></span><svg class="help-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+                </ul>
+                <p class="contrib-links" data-reveal>
+                    <a data-config="contributingUrl" href="https://github.com/BrixoByte/Owlet/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING.md</a>
+                    <a data-config="codeOfConductUrl" href="https://github.com/BrixoByte/Owlet/blob/main/CODE_OF_CONDUCT.md" target="_blank" rel="noopener">CODE_OF_CONDUCT.md</a>
+                    <a data-config="licenseUrl" href="https://github.com/BrixoByte/Owlet/blob/main/LICENSE" target="_blank" rel="noopener">LICENSE</a>
+                </p>
+
+                <h3 class="sub-heading" data-reveal>Contributors</h3>
+                <ul class="avatar-wall" id="avatar-wall" data-reveal aria-label="Contributors">
+                    <li class="avatar avatar-empty" aria-hidden="true"></li>
+                    <li class="avatar avatar-empty" aria-hidden="true"></li>
+                    <li class="avatar avatar-empty" aria-hidden="true"></li>
+                    <li class="avatar avatar-empty" aria-hidden="true"></li>
+                    <li class="avatar avatar-empty" aria-hidden="true"></li>
+                    <li class="avatar avatar-empty" aria-hidden="true"></li>
+                    <li class="avatar-slot"><a data-config="contributingUrl" href="https://github.com/BrixoByte/Owlet/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">You could be here</a></li>
+                </ul>
+
+                <ul class="principles" data-reveal aria-label="Principles">
+                    <li><svg aria-hidden="true"><use href="#i-check"/></svg>Vanilla only: HTML, CSS and JavaScript</li>
+                    <li><svg aria-hidden="true"><use href="#i-check"/></svg>Readable enough to learn from</li>
+                    <li><svg aria-hidden="true"><use href="#i-check"/></svg>Offline first</li>
+                    <li><svg aria-hidden="true"><use href="#i-check"/></svg>Free to run: no server bill</li>
+                    <li><svg aria-hidden="true"><use href="#i-check"/></svg>No lock-in: your files stay yours</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 9. FAQ: accordion with honest answers. -->
+        <section class="section faq" id="faq" aria-labelledby="faq-title">
+            <div class="container faq-grid">
+                <header class="section-head faq-head" data-reveal>
+                    <p class="eyebrow">Questions</p>
+                    <h2 id="faq-title">FAQ</h2>
+                    <p>Short, direct answers. If yours is missing, open a discussion.</p>
+                </header>
+                <div class="accordion" data-reveal>
+                    <div class="accordion-item">
+                        <h3><button class="accordion-trigger" type="button" aria-expanded="true" aria-controls="faq-1">What is Owlet?<svg aria-hidden="true"><use href="#i-chevron"/></svg></button></h3>
+                        <div class="accordion-panel" id="faq-1" role="region"><div><p>Owlet is a code editor that runs in your browser. It has a multi-file workspace, a CodeMirror editor, a live preview and a console. It is open source under the MIT license.</p></div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3><button class="accordion-trigger" type="button" aria-expanded="false" aria-controls="faq-2">Is it really free, including for commercial use?<svg aria-hidden="true"><use href="#i-chevron"/></svg></button></h3>
+                        <div class="accordion-panel" id="faq-2" role="region"><div><p>Yes. The MIT license lets you use, change and ship Owlet, including in commercial work. Keep the copyright notice with copies of the software.</p></div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3><button class="accordion-trigger" type="button" aria-expanded="false" aria-controls="faq-3">Does my code get uploaded?<svg aria-hidden="true"><use href="#i-chevron"/></svg></button></h3>
+                        <div class="accordion-panel" id="faq-3" role="region"><div><p>No. Your files stay in your browser on your device. Owlet has no server that receives them.</p></div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3><button class="accordion-trigger" type="button" aria-expanded="false" aria-controls="faq-4">Does it work offline?<svg aria-hidden="true"><use href="#i-chevron"/></svg></button></h3>
+                        <div class="accordion-panel" id="faq-4" role="region"><div><p>Yes, once the page has loaded. Owlet includes a service worker so it can open without a connection.</p></div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3><button class="accordion-trigger" type="button" aria-expanded="false" aria-controls="faq-5">Which languages work today?<svg aria-hidden="true"><use href="#i-chevron"/></svg></button></h3>
+                        <div class="accordion-panel" id="faq-5" role="region"><div><p>HTML, CSS and JavaScript work today. Python and other languages are planned, but they are not available yet.</p></div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3><button class="accordion-trigger" type="button" aria-expanded="false" aria-controls="faq-6">How do I contribute?<svg aria-hidden="true"><use href="#i-chevron"/></svg></button></h3>
+                        <div class="accordion-panel" id="faq-6" role="region"><div><p>Fork the repository, make your change, and open a pull request. The contributing guide explains the steps. There is no build step to learn first.</p></div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3><button class="accordion-trigger" type="button" aria-expanded="false" aria-controls="faq-7">How is it different from VS Code?<svg aria-hidden="true"><use href="#i-chevron"/></svg></button></h3>
+                        <div class="accordion-panel" id="faq-7" role="region"><div><p>VS Code is a full desktop editor with a large extension ecosystem. Owlet is a small web app with nothing to install, aimed at quick web projects and learning. It is not trying to replace VS Code.</p></div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3><button class="accordion-trigger" type="button" aria-expanded="false" aria-controls="faq-8">Will there be a desktop app?<svg aria-hidden="true"><use href="#i-chevron"/></svg></button></h3>
+                        <div class="accordion-panel" id="faq-8" role="region"><div><p>It is coming soon, but there is no release date yet. Check the roadmap for updates.</p></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. FINAL CTA: open Owlet with an idea passed in the URL. -->
+        <section class="section final-cta" aria-labelledby="cta-title">
+            <div class="container cta-inner" data-reveal>
+                <h2 id="cta-title">Not sure where to start?</h2>
+                <p>Describe what you want to build. Owlet opens with your idea in the link, so you can begin from there.</p>
+                <form class="idea-bar" id="idea-form" role="search" action="../index.html" method="get">
+                    <label class="sr-only" for="idea-input">What do you want to build?</label>
+                    <input class="idea-input" id="idea-input" name="idea" type="text" maxlength="200" placeholder="What do you want to build?" autocomplete="off">
+                    <button class="btn btn-primary" type="submit">Open Owlet<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+                </form>
+                <p class="cta-note muted">Nothing is sent to any server. The text only travels in the link to Owlet on your own device.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a class="brand" href="#top">
+                        <img class="brand-mark brand-mark--dark" src="../assets/brand/mark-on-dark-80.png" alt="" width="34" height="36"><img class="brand-mark brand-mark--light" src="../assets/brand/mark-on-light-80.png" alt="" width="36" height="36">
+                        <span>Owlet</span>
+                    </a>
+                    <p class="muted" style="margin-top: var(--space-4); max-width: 320px">A free, open-source code editor that runs in your browser and keeps working offline.</p>
+                </div>
+                <nav aria-label="Product links">
+                    <h3 class="eyebrow">Product</h3>
+                    <ul style="display:grid; gap: 4px">
+                        <li><a href="#product">Overview</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a data-config="demoUrl" href="../index.html">Open Owlet</a></li>
+                    </ul>
+                </nav>
+                <nav aria-label="Open source links">
+                    <h3 class="eyebrow">Open source</h3>
+                    <ul style="display:grid; gap: 4px">
+                        <li><a data-config="repoUrl" href="https://github.com/BrixoByte/Owlet" target="_blank" rel="noopener">Repository</a></li>
+                        <li><a data-config="contributingUrl" href="https://github.com/BrixoByte/Owlet/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a></li>
+                        <li><a data-config="licenseUrl" href="https://github.com/BrixoByte/Owlet/blob/main/LICENSE" target="_blank" rel="noopener">License (MIT)</a></li>
+                    </ul>
+                </nav>
+                <nav aria-label="Community and resources">
+                    <h3 class="eyebrow">Community</h3>
+                    <ul style="display:grid; gap: 4px">
+                        <li><a data-config="discussionsUrl" href="https://github.com/BrixoByte/Owlet/discussions" target="_blank" rel="noopener">Discussions</a></li>
+                        <li><a data-config="issuesUrl" href="https://github.com/BrixoByte/Owlet/issues" target="_blank" rel="noopener">Issues</a></li>
+                        <li><a data-config="roadmapUrl" href="../roadmap/index.html">Roadmap</a></li>
+                        <li><a data-config="docsUrl" href="../docs/index.html">Docs</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="footer-bottom">
+                <span>Released under the MIT License.</span>
+                <span class="grow"></span>
+                <span>Made with vanilla HTML, CSS and JavaScript.</span>
+                <span>&copy; <span id="year">2025</span> Owlet</span>
+                <a class="btn btn-ghost btn-sm" data-config="repoUrl" href="https://github.com/BrixoByte/Owlet" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-branch"/></svg>GitHub</a>
+                <label class="sr-only" for="lang-select">Language</label>
+                <select id="lang-select" class="badge" disabled aria-describedby="lang-note"><option>English</option></select>
+                <span id="lang-note" class="sr-only">More languages are not available yet.</span>
+                <a class="btn btn-secondary btn-sm" href="#top">
+                    <svg aria-hidden="true"><use href="#i-up"/></svg>Back to top
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/mock.js" defer></script>
+    <script src="js/scenes.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/github.js" defer></script>
+    <script src="js/showcase.js" defer></script>
+</body>
+</html>

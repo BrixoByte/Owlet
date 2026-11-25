@@ -1,0 +1,20 @@
+{
+  "name": "owlet-qa",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Dev-only Playwright QA suite for Owlet. Not shipped with the app; the app itself stays npm-free.",
+  "scripts": {
+    "install:browsers": "playwright install chromium firefox webkit",
+    "audit": "node scripts/static-audit.mjs",
+    "screenshots": "node scripts/run-screenshots.mjs",
+    "shortcuts:readme": "node scripts/sync-shortcuts.js",
+    "test": "playwright test",
+    "test:chromium": "playwright test --project=chromium",
+    "test:smoke": "playwright test --grep @smoke",
+    "report": "playwright show-report report/html"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^26.6.10"
+  }
+}
