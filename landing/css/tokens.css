@@ -143,3 +143,33 @@
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-3); background-clip: padding-box; }
 ::-webkit-scrollbar-thumb:active { background: var(--accent); background-clip: padding-box; }
+
+/* ==========================================================================
+   Site-wide "under development" notice — slim strip shown under the top bar
+   on docs and roadmap while the content is still being written and verified.
+   Uses the honest-amber --status-soon token, matching the roadmap styling.
+   ========================================================================== */
+
+.site-notice {
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-1);
+}
+.site-notice-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 10px var(--space-5, 20px);
+    font-size: var(--fs-sm);
+    line-height: 1.5;
+    color: var(--text-2);
+}
+.site-notice-icon {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    color: var(--status-soon);
+}
+.site-notice p { margin: 0; }
+.site-notice strong { color: var(--status-soon); font-weight: 600; }
