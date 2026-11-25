@@ -1,5 +1,6 @@
 # Playwright / qa tooling
 qa/node_modules/
+.wrangler/
 qa/report/test-results/
 qa/report/html/
 
