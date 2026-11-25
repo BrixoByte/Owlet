@@ -51,7 +51,7 @@ Owlet's open-source promise is permanent. Monetization happens only through *sep
 - [ ] npm package name reservation (future-proofing)
 - [ ] Trademark check (USPTO/search)
 - [ ] Social handles
-- [ ] **GitHub repo rename** `BrixoByte/DevPad` → `BrixoByte/Owlet` (code already points at the new URLs; GitHub auto-redirects the old ones)
+- [x] **GitHub repo rename** `BrixoByte/DevPad` → `BrixoByte/Owlet` (done 2026-11-25; GitHub auto-redirects the old URL)
 - [ ] Local folder rename `DevPad` → `Owlet` (OS-level, do outside the IDE)
 
 ### Rename implementation — done 2026-11-24
