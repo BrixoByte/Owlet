@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owlet Docs</title>
+    <meta name="description" content="Documentation for Owlet, the free offline-first web IDE. Getting started, user guide, contributing, developer and design guides.">
+    <link rel="icon" type="image/png" href="../assets/brand/icon-dark-32.png" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" href="../assets/brand/icon-light-32.png" media="(prefers-color-scheme: light)">
+    <link rel="apple-touch-icon" href="../assets/brand/icon-180.png">
+    <meta name="theme-color" content="#0b0b0e">
+    <meta property="og:title" content="Owlet Docs">
+    <meta property="og:description" content="Documentation for Owlet, the free offline-first web IDE.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://brixobyte.github.io/Owlet/docs/">
+    <link rel="canonical" href="https://brixobyte.github.io/Owlet/docs/">
+
+    <!-- Apply the saved theme before first paint so there is no flash. -->
+    <script>
+        (function () {
+            // One-time migration: move DevPad-era storage keys to their Owlet names.
+            try {
+                var mig = [];
+                for (var i = 0; i < localStorage.length; i++) mig.push(localStorage.key(i));
+                mig.forEach(function (k) {
+                    if (!k || k.indexOf('devpad') !== 0) return;
+                    var nk = 'owlet' + k.slice(6);
+                    if (localStorage.getItem(nk) === null) localStorage.setItem(nk, localStorage.getItem(k));
+                    localStorage.removeItem(k);
+                });
+            } catch (e) { /* storage blocked */ }
+            try {
+                var p = JSON.parse(localStorage.getItem('owlet:ui:prefs') || '{}');
+                var theme = p.theme || 'system';
+                if (theme === 'system') {
+                    theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+                }
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) { /* keep the dark default */ }
+        })();
+    </script>
+
+    <!-- Same fonts as the app: Inter (UI) and JetBrains Mono (code). -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+    <!-- Shared design tokens from the landing page, then docs-only styles. -->
+    <link rel="stylesheet" href="../landing/css/tokens.css">
+    <link rel="stylesheet" href="css/docs.css">
+</head>
+<body>
+    <a class="skip-link" href="#doc-content">Skip to content</a>
+    <!-- Screen-reader announcements for route changes and actions. -->
+    <div id="a11y-live" class="sr-only" aria-live="polite" role="status"></div>
+
+    <!-- ============ Top bar ============ -->
+    <header class="docs-topbar">
+        <div class="topbar-inner">
+            <button id="btn-drawer" class="icon-btn drawer-btn" type="button" aria-label="Open documentation menu" aria-expanded="false" aria-controls="docs-sidebar">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+            <a class="brand" href="../landing/index.html" title="Back to the Owlet landing page">
+                <img class="brand-mark brand-mark--dark" src="../assets/brand/mark-on-dark-80.png" alt="" width="30" height="32"><img class="brand-mark brand-mark--light" src="../assets/brand/mark-on-light-80.png" alt="" width="32" height="32">
+                <span class="brand-name">Owlet</span>
+                <span class="brand-label">Docs</span>
+            </a>
+            <span class="version-pill" id="version-pill">Docs for Owlet · Latest</span>
+
+            <button id="search-trigger" class="search-trigger" type="button" aria-label="Search documentation" aria-keyshortcuts="Control+k">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                <span class="search-trigger-text">Search docs…</span>
+                <kbd>Ctrl K</kbd>
+            </button>
+
+            <nav class="topbar-links" aria-label="Site links">
+                <a href="../landing/index.html">Landing</a>
+                <a id="nav-roadmap" href="../roadmap/index.html">Roadmap</a>
+                <a id="nav-github" class="icon-btn" href="https://github.com/BrixoByte/Owlet" target="_blank" rel="noopener" aria-label="Owlet on GitHub">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.1.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.56 9.56 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.69 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85V21c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" fill="currentColor"/></svg>
+                </a>
+                <button id="btn-theme" class="icon-btn" type="button" aria-label="Toggle light and dark theme" aria-pressed="false">
+                    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5 5l1.6 1.6M17.4 17.4 19 19M19 5l-1.6 1.6M6.6 17.4 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                </button>
+                <a id="btn-open-app" class="btn btn-primary btn-open" href="../index.html">Open Owlet</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ============ Page frame: sidebar | article | TOC ============ -->
+    <div class="docs-frame">
+        <!-- Sidebar drawer scrim (mobile only). -->
+        <div id="drawer-scrim" class="drawer-scrim" hidden></div>
+
+        <nav id="docs-sidebar" class="docs-sidebar" aria-label="Documentation">
+            <div id="sidebar-groups"><!-- built by docs.js --></div>
+        </nav>
+
+        <main id="main" class="docs-main" tabindex="-1">
+            <div class="article-wrap">
+                <!-- Mobile "On this page" collapsible, populated per page. -->
+                <details id="toc-mobile" class="toc-mobile" hidden>
+                    <summary>On this page</summary>
+                    <ul id="toc-mobile-list" class="toc-list"></ul>
+                </details>
+
+                <article id="doc-content" class="doc-article" aria-labelledby="doc-title"><!-- rendered by docs.js --></article>
+
+                <footer class="doc-footer" id="doc-footer" hidden>
+                    <div class="doc-footer-top">
+                        <a id="edit-link" href="#" target="_blank" rel="noopener" class="edit-link">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3l4 4L8 20H4v-4L17 3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+                            Edit this page on GitHub
+                        </a>
+                        <span class="last-updated" id="last-updated"></span>
+                    </div>
+                    <div class="helpfulness" id="helpfulness">
+                        <span class="helpfulness-q">Was this helpful?</span>
+                        <button type="button" class="thumb-btn" id="thumb-yes" aria-label="Yes, this page was helpful">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11v9H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3Zm0 0 4-7c1.4 0 2.3 1 2 3l-.6 2H19a2 2 0 0 1 2 2.4l-1.2 5.4a2 2 0 0 1-2 1.6H7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+                        </button>
+                        <button type="button" class="thumb-btn" id="thumb-no" aria-label="No, this page was not helpful">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 13V4h3a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-3Zm0 0-4 7c-1.4 0-2.3-1-2-3l.6-2H5a2 2 0 0 1-2-2.4l1.2-5.4A2 2 0 0 1 6.2 4H17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+                        </button>
+                    </div>
+                    <nav class="prevnext" id="prevnext" aria-label="Previous and next pages">
+                        <a id="prev-page" class="prevnext-card prev" hidden><span class="prevnext-dir">← Previous</span><span class="prevnext-title"></span></a>
+                        <a id="next-page" class="prevnext-card next" hidden><span class="prevnext-dir">Next →</span><span class="prevnext-title"></span></a>
+                    </nav>
+                </footer>
+            </div>
+
+            <footer class="docs-site-footer">
+                <div class="site-footer-inner">
+                    <span>Owlet · MIT License</span>
+                    <span class="footer-sep" aria-hidden="true">·</span>
+                    <a href="../landing/index.html">Landing</a>
+                    <a id="foot-repo" href="https://github.com/BrixoByte/Owlet" target="_blank" rel="noopener">GitHub</a>
+                    <a id="foot-contributing" href="https://github.com/BrixoByte/Owlet/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a>
+                    <span class="footer-grow"></span>
+                    <a href="#top" id="back-to-top">Back to top ↑</a>
+                </div>
+            </footer>
+        </main>
+
+        <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+            <div class="toc-sticky">
+                <p class="toc-heading">On this page</p>
+                <ul id="toc-list" class="toc-list"><!-- built per page --></ul>
+            </div>
+        </aside>
+    </div>
+
+    <!-- ============ Search dialog ============ -->
+    <div id="search-dialog" class="search-dialog" role="dialog" aria-modal="true" aria-label="Search documentation" hidden>
+        <div class="search-box" role="document">
+            <div class="search-input-row">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                <input id="search-input" type="search" role="combobox" aria-autocomplete="list" placeholder="Search documentation…" autocomplete="off" spellcheck="false" aria-label="Search documentation" aria-controls="search-results" aria-expanded="false">
+                <kbd>Esc</kbd>
+            </div>
+            <ul id="search-results" class="search-results" role="listbox" aria-label="Search results"></ul>
+            <div class="search-foot"><kbd>↑↓</kbd> navigate · <kbd>Enter</kbd> open · <kbd>Esc</kbd> close</div>
+        </div>
+    </div>
+
+    <!-- Data files first (they fill window.OwletDocs), then renderer, then search. -->
+    <script src="js/docs-data/getting-started.js" defer></script>
+    <script src="js/docs-data/using-owlet.js" defer></script>
+    <script src="js/docs-data/contributing.js" defer></script>
+    <script src="js/docs-data/developer.js" defer></script>
+    <script src="js/docs-data/design.js" defer></script>
+    <script src="js/docs-data/reference.js" defer></script>
+    <script src="js/docs.js" defer></script>
+    <script src="js/search.js" defer></script>
+</body>
+</html>

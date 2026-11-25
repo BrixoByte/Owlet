@@ -1,0 +1,234 @@
+/* console.css - Console rows, the Error Details popup and the code frame.
+   Layout and colours come from tokens.css / themes.css; this file only adds
+   the parts the console and the popup need. */
+
+/* ---------- console rows ---------- */
+.console-line:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
+.console-line.is-hidden { display: none !important; }
+.console-level {
+    flex: 0 0 auto;
+    padding: 0 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.console-line.error .console-level { background: var(--error-soft); color: var(--error); }
+.console-line.warn .console-level { background: var(--warn-soft); color: var(--warn); }
+.console-line.info .console-level { background: var(--info-soft); color: var(--info); }
+.console-origin-tag {
+    flex: 0 0 auto;
+    padding: 0 6px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 11px;
+    color: var(--text-3);
+}
+.console-msg {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+}
+.console-loc {
+    flex: 0 0 auto;
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.console-line.clickable .console-loc { cursor: pointer; }
+.console-details {
+    flex: 0 0 auto;
+    height: 18px;
+    padding: 0 6px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--surface-3);
+    color: var(--text-2);
+    font-size: 11px;
+    cursor: pointer;
+}
+.console-details:hover { color: var(--text-1); border-color: var(--border-strong); }
+
+/* ---------- modal state ---------- */
+body.modal-open { overflow: hidden; }
+
+/* ---------- error details popup ---------- */
+.error-box {
+    width: min(760px, 94vw);
+    max-height: 88vh;
+    overflow: auto;
+    text-align: left;
+    background: var(--surface-4);
+    color: var(--text-1);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    padding: 16px 18px;
+    outline: none;
+}
+.error-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.error-spacer { flex: 1; }
+.error-position { color: var(--text-3); font-size: 12px; }
+.error-badge {
+    padding: 1px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: var(--error-soft);
+    color: var(--error);
+}
+.error-badge.level-warn { background: var(--warn-soft); color: var(--warn); }
+.error-badge.level-info { background: var(--info-soft); color: var(--info); }
+.error-box h3 {
+    font-size: 15px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+    margin-bottom: 10px;
+}
+.error-box h4 {
+    margin: 14px 0 6px;
+    color: var(--text-3);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.error-meta {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 4px 12px;
+    font-size: 13px;
+}
+.error-meta dt { color: var(--text-3); }
+.error-meta dd { margin: 0; overflow-wrap: anywhere; }
+.error-goto {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.error-goto:disabled { color: var(--text-disabled); text-decoration: none; cursor: default; }
+.error-pre {
+    margin: 0;
+    max-height: 160px;
+    overflow: auto;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface-1);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.error-stack { max-height: 200px; }
+
+/* ---------- code frame ---------- */
+.code-frame {
+    margin: 0;
+    max-height: 220px;
+    overflow: auto;
+    padding: 8px 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface-1);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.5;
+}
+.cf-line { display: block; white-space: pre; }
+.cf-num {
+    display: inline-block;
+    width: 3em;
+    margin-right: 1em;
+    padding-right: 0.5em;
+    text-align: right;
+    color: var(--text-3);
+    user-select: none;
+}
+.cf-hit { background: var(--error-soft); }
+.cf-hit .cf-num { color: var(--error); }
+.cf-caret { padding-left: 4em; color: var(--error); white-space: pre; }
+
+/* ---------- arguments tree ---------- */
+.args-tree { font-family: var(--font-mono); font-size: 12.5px; }
+.args-tree details { margin-left: 4px; }
+.args-tree summary { cursor: pointer; color: var(--text-2); padding: 2px 0; }
+.arg-row { padding: 2px 0 2px 18px; white-space: pre-wrap; word-break: break-word; }
+.arg-key { color: var(--text-3); }
+.arg-value { color: var(--text-1); }
+.arg-string { color: var(--success); }
+.arg-number,
+.arg-boolean,
+.arg-bigint { color: var(--info); }
+.arg-undefined,
+.arg-null,
+.arg-circular,
+.arg-truncated { color: var(--text-3); font-style: italic; }
+
+/* ---------- fix hint and actions ---------- */
+.fix-hint {
+    margin: 0;
+    padding: 8px 10px;
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    background: var(--accent-soft);
+    font-size: 13px;
+    line-height: 1.5;
+}
+.error-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+}
+.error-actions button,
+.error-nav {
+    height: 28px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface-3);
+    color: var(--text-1);
+    font-size: 12.5px;
+    cursor: pointer;
+}
+.error-actions button:hover,
+.error-nav:hover:not(:disabled) { border-color: var(--border-strong); background: var(--state-active); }
+.error-nav:disabled { color: var(--text-disabled); cursor: default; }
+#error-close { background: var(--accent); color: var(--text-on-accent); border-color: var(--accent); }
+.error-box button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* ---------- console filters ---------- */
+.console-origin {
+    height: 22px;
+    max-width: 150px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--surface-3);
+    color: var(--text-1);
+    font-size: 12px;
+}

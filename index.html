@@ -1,351 +1,874 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark" data-layout="classic">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevPad</title>
-    <!-- CodeMirror CSS -->
+    <title>Owlet</title>
+    <link rel="icon" type="image/png" href="assets/brand/icon-dark-32.png" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" href="assets/brand/icon-light-32.png" media="(prefers-color-scheme: light)">
+    <link rel="apple-touch-icon" href="assets/brand/icon-180.png">
+    <meta name="theme-color" content="#0b0b0e">
+
+    <!-- Apply the saved theme and layout before first paint (no flash). -->
+    <script>
+        (function () {
+            // One-time migration: move DevPad-era storage keys to their Owlet names.
+            try {
+                var mig = [];
+                for (var i = 0; i < localStorage.length; i++) mig.push(localStorage.key(i));
+                mig.forEach(function (k) {
+                    if (!k || k.indexOf('devpad') !== 0) return;
+                    var nk = 'owlet' + k.slice(6);
+                    if (localStorage.getItem(nk) === null) localStorage.setItem(nk, localStorage.getItem(k));
+                    localStorage.removeItem(k);
+                });
+            } catch (e) { /* storage blocked */ }
+            try {
+                var p = JSON.parse(localStorage.getItem('owlet:ui:prefs') || '{}');
+                var theme = p.theme || 'system';
+                if (theme === 'system') {
+                    theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+                }
+                document.documentElement.setAttribute('data-theme', theme);
+                var lay = JSON.parse(localStorage.getItem('owlet.layout.v2') || '{}');
+                document.documentElement.setAttribute('data-layout', lay.preset || 'classic');
+            } catch (e) { /* keep the defaults in the tag above */ }
+        })();
+    </script>
+
+    <!-- Typography: Inter (UI) and JetBrains Mono (code). Falls back to system fonts offline. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+    <!-- CodeMirror core + hint/lint styles (pinned CDN). The "owlet" theme lives in css/themes.css. -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/scroll/simplescrollbars.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.css">
-    <!-- Remix Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
-    <!-- Fontawesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/lint/lint.min.css">
+
+    <!-- xterm.js styles for the terminal drawer -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.min.css">
+
+    <!-- Owlet design system: tokens -> themes -> components -> layout (in this order) -->
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/dialog.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/console.css">
 </head>
-<body class="theme-dark">
-    <div class="ide-container">
-        <!-- Top Bar -->
-        <div class="top-bar">
-            <div style="display: flex; align-items: center;">
-                <div class="logo">
-                    <i class="fa-solid fa-layer-group"></i>
-                    DevPad
-                </div>
-                <div class="project-info" style="display: none;">
-                    <span class="project-name">Untitled Project</span>
-                    <span class="project-status">
-                        <i class="ri-save-line"></i>
-                        All changes saved
-                    </span>
-                </div>
+<body>
+    <!-- Loading skeleton: mirrors the workbench layout; boot.js removes it after 1.2-3 s. -->
+    <div id="boot-skeleton" role="status" aria-busy="true">
+        <span class="visually-hidden">Loading Owlet</span>
+        <div class="boot-sk-top">
+            <span class="skeleton boot-sk-logo"></span>
+            <span class="skeleton boot-sk-menu"></span>
+            <span class="skeleton boot-sk-menu"></span>
+            <span class="skeleton boot-sk-menu"></span>
+            <span class="skeleton boot-sk-cmd"></span>
+            <span class="skeleton boot-sk-actions"></span>
+        </div>
+        <div class="boot-sk-body">
+            <div class="boot-sk-panel boot-sk-rail">
+                <span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span>
             </div>
-            <div class="actions">
-                <div class="action-group">
-                    <button class="theme-toggle" title="Toggle Theme (Alt+T)">
-                        <i class="ri-contrast-2-line"></i>
-                    </button>
-                    <button class="save-project" title="Save Project (Ctrl+S)">
-                        <i class="ri-save-line"></i>
-                    </button>
-                    <button class="load-project" title="Load Project (Ctrl+O)">
-                        <i class="ri-folder-open-line"></i>
-                    </button>
-                    <button class="share-project" title="Share Project (Ctrl+Shift+S)">
-                        <i class="ri-share-line"></i>
-                    </button>
-                    <button class="download-files" title="Download Files">
-                        <i class="ri-download-2-line"></i>
-                    </button>
-                    <button class="settings-btn" title="Settings (Alt+,)">
-                        <i class="ri-settings-3-line"></i>
-                    </button>
-                </div>
+            <div class="boot-sk-panel boot-sk-side">
+                <span class="skeleton boot-sk-title"></span>
+                <span class="skeleton boot-sk-line"></span>
+                <span class="skeleton boot-sk-line"></span>
+                <span class="skeleton boot-sk-line"></span>
+                <span class="skeleton boot-sk-line"></span>
+                <span class="skeleton boot-sk-line"></span>
+                <span class="skeleton boot-sk-line"></span>
+            </div>
+            <div class="boot-sk-panel boot-sk-editor">
+                <span class="skeleton boot-sk-tab"></span>
+                <span class="skeleton boot-sk-line"></span>
+                <span class="skeleton boot-sk-line"></span>
+                <span class="skeleton boot-sk-line"></span>
+                <span class="skeleton boot-sk-line"></span>
+                <span class="skeleton boot-sk-line"></span>
+            </div>
+            <div class="boot-sk-panel boot-sk-preview">
+                <span class="skeleton boot-sk-title"></span>
+                <span class="skeleton boot-sk-frame"></span>
             </div>
         </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Editor Section -->
-            <div class="editor-section">
-                <!-- Editor Tabs -->
-                <div class="editor-tabs">
-                    <button class="tab active" data-tab="html">
-                        <i class="ri-html5-line"></i>
-                        HTML
-                    </button>
-                    <button class="tab" data-tab="css">
-                        <i class="ri-css3-line"></i>
-                        CSS
-                    </button>
-                    <button class="tab" data-tab="js">
-                        <i class="fa-brands fa-js"></i>
-                        JavaScript
-                    </button>
-                </div>
-                
-                <!-- Editor Panels -->
-                <div class="editor-panels">
-                    <div class="panel active" id="html-panel">
-                        <textarea id="html-editor"></textarea>
-                    </div>
-                    <div class="panel" id="css-panel">
-                        <textarea id="css-editor"></textarea>
-                    </div>
-                    <div class="panel" id="js-panel">
-                        <textarea id="js-editor"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Resizable Divider -->
-            <div class="divider"></div>
-
-            <!-- Preview Section -->
-            <div class="preview-section">
-                <div class="preview-header">
-                    <div class="preview-controls">
-                        <button class="preview-size active" data-size="desktop" title="Desktop View">
-                            <i class="ri-computer-line"></i>
-                        </button>
-                        <button class="preview-size" data-size="tablet" title="Tablet View">
-                            <i class="ri-tablet-line"></i>
-                        </button>
-                        <button class="preview-size" data-size="mobile" title="Mobile View">
-                            <i class="ri-smartphone-line"></i>
-                        </button>
-                    </div>
-                    <div class="preview-actions">
-                    <button class="refresh-preview" title="Refresh Preview">
-                        <i class="ri-refresh-line"></i>
-                        Refresh
-                        </button>
-                        <button class="open-preview" title="Open in New Window">
-                            <i class="ri-external-link-line"></i>
-                    </button>
-                </div>
-            </div>
-                <div class="preview-frame">
-                    <iframe id="preview" sandbox="allow-scripts allow-same-origin"></iframe>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Save Project Modal -->
-    <div class="modal" id="save-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Save Project</h3>
-                <button class="close-modal">
-                    <i class="ri-close-line"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="input-group">
-                    <label class="input-label" for="project-name">Project Name</label>
-                    <input type="text" id="project-name" placeholder="Enter a name for your project">
-                </div>
-                <button class="btn btn-primary save-confirm">
-                    <i class="ri-save-line"></i>
-                    Save Project
-                </button>
-            </div>
+        <div class="boot-sk-status">
+            <span class="skeleton"></span><span class="skeleton"></span>
         </div>
     </div>
 
-    <!-- Project Load Modal -->
-    <div class="modal" id="load-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Load Project</h3>
-                <button class="close-modal">
-                    <i class="ri-close-line"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="projects-list">
-                    <!-- Projects will be dynamically added here -->
-                </div>
-            </div>
+    <div id="app">
+    <!-- ===== Top bar: brand, command bar, actions ===== -->
+    <header id="topbar">
+        <div class="topbar-left">
+            <span id="logo"><img class="logo-mark logo-mark--dark" src="assets/brand/mark-on-dark-80.png" alt="" aria-hidden="true"><img class="logo-mark logo-mark--light" src="assets/brand/mark-on-light-80.png" alt="" aria-hidden="true"><span class="logo-word">Owlet</span></span>
+            <nav id="menubar" aria-label="Application menu">
+                <button class="menu-btn" type="button" data-menu="file">File</button>
+                <button class="menu-btn" type="button" data-menu="edit">Edit</button>
+                <button class="menu-btn" type="button" data-menu="selection">Selection</button>
+                <button class="menu-btn" type="button" data-menu="view">View</button>
+                <button class="menu-btn" type="button" data-menu="go">Go</button>
+                <button class="menu-btn menu-btn-more" type="button" data-menu="more" aria-label="More">···</button>
+            </nav>
         </div>
-    </div>
-
-    <!-- Share Modal -->
-    <div class="modal" id="share-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Share Project</h3>
-                <button class="close-modal">
-                    <i class="ri-close-line"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="share-options">
-                    <button class="btn btn-secondary copy-html">
-                        <i class="ri-html5-line"></i>
-                        Copy HTML
-                    </button>
-                    <button class="btn btn-secondary copy-css">
-                        <i class="ri-css3-line"></i>
-                        Copy CSS
-                    </button>
-                    <button class="btn btn-secondary copy-js">
-                        <i class="ri-javascript-line"></i>
-                        Copy JavaScript
-                    </button>
-                    <button class="btn btn-primary copy-all">
-                        <i class="ri-file-copy-line"></i>
-                        Copy All Code
-                    </button>
-                </div>
-        </div>
-    </div>
-
-    <!-- Settings Popover -->
-    <div class="settings-popover" id="settings-popover" aria-hidden="true">
-        <div class="settings-popover-header">
-            <div class="settings-popover-title">
-                <h3>Quick Settings</h3>
-                <p>Adjust your workspace and shortcuts</p>
-            </div>
-            <button class="close-settings-popover" aria-label="Close settings">
-                <i class="ri-close-line"></i>
+        <div class="topbar-center">
+            <button id="command-bar" class="command-bar" type="button" data-tip="Command palette (Ctrl+P)" data-tip-pos="top" aria-label="Open command palette">
+                <span data-icon="search" class="icon-sm"></span>
+                <span class="command-text">Search files and commands</span>
+                <kbd>Ctrl P</kbd>
             </button>
         </div>
-        <div class="settings-popover-body">
-            <div class="settings-group">
-                <label class="settings-label">Theme</label>
-                <div class="theme-options">
-                    <button class="theme-option active" data-theme="dark">
-                        <i class="ri-moon-line"></i>
-                        <span>Dark</span>
-                    </button>
-                    <button class="theme-option" data-theme="blue">
-                        <i class="ri-water-flash-line"></i>
-                        <span>Blue</span>
-                    </button>
-                    <button class="theme-option" data-theme="green">
-                        <i class="ri-leaf-line"></i>
-                        <span>Green</span>
-                    </button>
-                    <button class="theme-option" data-theme="light">
-                        <i class="ri-sun-line"></i>
-                        <span>Light</span>
-                    </button>
+        <div class="topbar-right">
+            <div id="panel-toggles" class="panel-toggles">
+                <button id="btn-toggle-explorer" class="btn-icon" type="button" data-tip="Toggle explorer (Ctrl+B)" aria-pressed="false" aria-label="Toggle explorer"><span data-icon="panel-left"></span></button>
+                <button id="btn-toggle-terminal" class="btn-icon" type="button" data-tip="Toggle terminal (Ctrl+J)" aria-pressed="false" aria-label="Toggle terminal"><span data-icon="panel-bottom"></span></button>
+                <button id="btn-toggle-preview" class="btn-icon" type="button" data-tip="Toggle preview" aria-pressed="false" aria-label="Toggle preview"><span data-icon="panel-right"></span></button>
+            </div>
+            <div id="collab-avatars" class="collab-avatars" aria-label="Collaborators"></div>
+            <div id="toolbar">
+                <button id="btn-run" class="btn btn-primary btn-sm btn-keep" type="button" data-tip="Run active file"><span data-icon="play" class="icon-sm"></span><span>Run</span></button>
+                <button id="btn-share" class="btn-icon btn-keep" type="button" data-tip="Share project" aria-label="Share project"><span data-icon="share"></span></button>
+            </div>
+            <span class="topbar-sep" aria-hidden="true"></span>
+            <button id="btn-theme" class="btn-icon" type="button" data-tip="Toggle light / dark" aria-label="Toggle light / dark theme"><span data-icon="sun"></span></button>
+            <button id="btn-user" class="rail-avatar" type="button" data-tip="Account" aria-haspopup="menu" aria-label="Account">OW</button>
+        </div>
+    </header>
+
+    <!-- ===== Workbench shell: floating panels on a grid (layout.css) ===== -->
+    <div id="shell" data-empty data-side="open" data-right="open" data-bottom="open" data-preview="right">
+        <div id="side-mask" aria-hidden="true"></div>
+        <nav id="activity-rail" aria-label="Activity bar">
+            <div class="rail-group">
+                <button class="rail-btn" type="button" data-view="explorer" aria-pressed="true" aria-label="Explorer" data-tip="Explorer (Ctrl+B)" data-tip-pos="right"><span data-icon="files"></span></button>
+                <button class="rail-btn" type="button" data-view="git" aria-pressed="false" aria-label="Source control" data-tip="Source control" data-tip-pos="right"><span data-icon="git"></span><span class="badge badge--accent" id="rail-git-badge"></span></button>
+                <button id="btn-minimap" class="rail-btn" type="button" aria-label="Minimap" data-tip="Minimap (coming soon)" data-tip-pos="right"><span data-icon="minimap"></span></button>
+                <button id="btn-format" class="rail-btn" type="button" aria-label="Format document" data-tip="Format document" data-tip-pos="right"><span data-icon="code"></span></button>
+                <button id="btn-wrap" class="rail-btn" type="button" aria-label="Toggle word wrap" data-tip="Toggle word wrap" data-tip-pos="right" aria-pressed="true"><span data-icon="list"></span></button>
+                <button class="rail-btn" type="button" data-view="ai" aria-pressed="false" aria-label="AI chat" data-tip="AI chat (coming soon)" data-tip-pos="right"><span data-icon="sparkles"></span></button>
+                <button class="rail-btn" type="button" data-view="extensions" aria-pressed="false" aria-label="Extensions" data-tip="Extensions (coming soon)" data-tip-pos="right"><span data-icon="extensions"></span></button>
+            </div>
+            <div class="rail-spacer"></div>
+            <div class="rail-group">
+                <button id="rail-help" class="rail-btn" type="button" aria-label="Keyboard shortcuts" data-tip="Keyboard shortcuts (?)" data-tip-pos="right"><span data-icon="help"></span></button>
+                <button id="rail-settings" class="rail-btn" type="button" aria-label="Settings" data-tip="Settings" data-tip-pos="right"><span data-icon="settings"></span></button>
+            </div>
+        </nav>
+
+        <aside id="sidebar" aria-label="Side panel">
+            <div class="panel-header">
+                <span class="panel-title" id="side-title">Explorer</span>
+                <div id="sidebar-toolbar">
+                    <button id="btn-new-file" class="btn-icon btn-sm tool-explorer" type="button" data-tip="New file" aria-label="New file"><span data-icon="file-plus"></span></button>
+                    <button id="btn-new-folder" class="btn-icon btn-sm tool-explorer" type="button" data-tip="New folder" aria-label="New folder"><span data-icon="folder-plus"></span></button>
+                    <button id="btn-open-folder" class="btn-icon btn-sm tool-explorer" type="button" data-tip="Open folder from PC" aria-label="Open folder"><span data-icon="folder-open"></span></button>
                 </div>
             </div>
-            <div class="settings-group">
-                <label class="settings-label">Editor Settings</label>
-                <div class="settings-options">
-                    <label class="setting-item">
-                        <span>Font Size</span>
-                        <select id="font-size">
-                            <option value="12">12px</option>
-                            <option value="14" selected>14px</option>
-                            <option value="16">16px</option>
-                            <option value="18">18px</option>
-                        </select>
-                    </label>
-                    <label class="setting-item">
-                        <span>Tab Size</span>
-                        <select id="tab-size">
-                            <option value="2">2 spaces</option>
-                            <option value="4" selected>4 spaces</option>
-                            <option value="8">8 spaces</option>
-                        </select>
-                    </label>
-                    <label class="setting-item">
-                        <span>Auto Save</span>
-                        <label class="switch">
-                            <input type="checkbox" id="auto-save">
-                            <span class="slider"></span>
-                        </label>
-                    </label>
-                    <label class="setting-item">
-                        <span>Line Numbers</span>
-                        <label class="switch">
-                            <input type="checkbox" id="line-numbers" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </label>
-                    <label class="setting-item">
-                        <span>Word Wrap</span>
-                        <label class="switch">
-                            <input type="checkbox" id="word-wrap" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </label>
+            <div class="side-view active" data-side-view="explorer">
+                <div class="side-filter"><input id="tree-filter" type="search" placeholder="Filter files" aria-label="Filter files"></div>
+                <div id="file-tree" data-testid="file-tree"></div>
+            </div>
+            <div class="side-view" data-side-view="search">
+                <div class="empty-state"><div class="empty-icon" data-icon="search"></div><h4>Search</h4><p>Project-wide search arrives in a later UI phase.</p></div>
+            </div>
+            <div class="side-view" data-side-view="git">
+                <div id="git-changes" class="git-list" aria-label="Changes"></div>
+            </div>
+            <div class="side-view" data-side-view="ai">
+                <div class="empty-state"><div class="empty-icon" data-icon="sparkles"></div><h4>AI chat</h4><p>The chat panel is designed but not connected yet.</p></div>
+            </div>
+            <div class="side-view" data-side-view="extensions">
+                <div class="empty-state"><div class="empty-icon" data-icon="extensions"></div><h4>Extensions</h4><p>The plugin list is a planned stub.</p></div>
+            </div>
+        </aside>
+
+        <div id="divider-side" class="divider divider-v" aria-label="Resize explorer"></div>
+
+        <section id="editor-pane" class="has-welcome" aria-label="Editor">
+            <div id="tab-bar" aria-label="Open files"></div>
+            <div id="editor-host"><div id="editor-groups"></div></div>
+            <div id="welcome" class="is-visible" aria-label="Welcome" data-testid="welcome"></div>
+        </section>
+
+        <div id="divider" class="divider divider-v" aria-label="Resize preview"></div>
+
+        <section id="preview-pane" aria-label="Live preview">
+            <div id="preview-header">
+                <span class="panel-title">Preview</span>
+                <span class="spacer"></span>
+                <button id="btn-refresh-preview" class="btn-icon btn-sm" type="button" data-tip="Refresh (Alt+R)" aria-label="Refresh preview"><span data-icon="refresh"></span></button>
+                <button id="btn-open-window" class="btn-icon btn-sm" type="button" data-tip="Open preview in new window" aria-label="Open in new window"><span data-icon="external"></span></button>
+                <button id="btn-preview-close" class="btn-icon btn-sm" type="button" data-tip="Hide preview" aria-label="Hide preview"><span data-icon="x"></span></button>
+            </div>
+            <div id="preview-urlbar">
+                <div id="preview-url"><span data-icon="lock" class="icon-sm"></span><span class="url-origin">owlet://preview</span><span class="url-path" id="preview-path">/index.html</span></div>
+                <button id="btn-preview-inspect" class="btn-icon btn-sm" type="button" data-tip="Inspect element (stub)" aria-pressed="false" aria-label="Inspect element"><span data-icon="crosshair"></span></button>
+            </div>
+            <div id="preview-toolbar" role="toolbar" aria-label="Preview options">
+                <select id="preview-device" class="device-select" aria-label="Device preset"></select>
+                <button id="btn-preview-rotate" class="btn-icon btn-sm" type="button" data-tip="Rotate device" aria-label="Rotate"><span data-icon="rotate"></span></button>
+                <select id="preview-zoom" class="zoom-select" aria-label="Zoom"></select>
+                <label class="toolbar-toggle" data-tip="Keep the preview in sync while typing"><span class="switch"><input id="preview-auto" type="checkbox"><span></span></span><span>Auto</span></label>
+                <label class="toolbar-toggle" data-tip="Show a device frame"><span class="switch"><input id="preview-frame-toggle" type="checkbox"><span></span></span><span>Frame</span></label>
+                <button id="btn-preview-surface" class="btn-icon btn-sm" type="button" data-tip="Light / dark surround" aria-label="Toggle surround"><span data-icon="sun"></span></button>
+            </div>
+            <div id="preview-stage">
+                <div id="preview-viewport">
+                    <iframe id="preview-frame" sandbox="allow-scripts" title="Live preview" data-testid="preview"></iframe>
+                    <div class="preview-handle preview-handle-r" data-handle="r" aria-hidden="true"></div>
+                    <div class="preview-handle preview-handle-b" data-handle="b" aria-hidden="true"></div>
+                    <div class="preview-handle preview-handle-br" data-handle="br" aria-label="Resize viewport" role="separator"></div>
+                    <div id="preview-readout" class="preview-readout" aria-live="polite"></div>
+                </div>
+                <div id="preview-loading" aria-hidden="true"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+                <div id="preview-error" role="alert">
+                    <span data-icon="alert" class="icon-sm"></span>
+                    <span class="preview-error-msg" id="preview-error-msg"></span>
+                    <button id="preview-error-link" class="preview-error-link" type="button"></button>
+                    <button id="btn-preview-error-close" class="btn-icon btn-sm" type="button" aria-label="Dismiss error"><span data-icon="x"></span></button>
+                </div>
+                <div id="preview-inspector-stub">Inspector: click any element to inspect it (coming soon)</div>
+            </div>
+            <div id="preview-footer">
+                <span class="size-readout" id="preview-size">0 × 0</span>
+                <span id="preview-status">Live</span>
+            </div>
+        </section>
+
+    <div id="divider-bottom" class="divider divider-h" aria-label="Resize bottom panel"></div>
+
+    <!-- ===== Bottom dock: console, terminal, problems (preview can be docked here) ===== -->
+    <section id="bottom-dock" aria-label="Bottom panel">
+        <div id="dock-tabs" role="tablist">
+            <button class="dock-tab active" type="button" data-dock="console" role="tab" aria-selected="true">Console <span id="console-badge"></span></button>
+            <button class="dock-tab" type="button" data-dock="terminal" role="tab" aria-selected="false">Terminal</button>
+            <button class="dock-tab" type="button" data-dock="problems" role="tab" aria-selected="false">Problems <span id="problems-badge" class="badge badge--error"></span></button>
+            <div class="dock-actions">
+                <button id="btn-dock-pin" class="btn-icon btn-sm" type="button" data-tip="Pin panel — unpin to move or close" aria-pressed="false" aria-label="Pin panel"><span data-icon="pin"></span></button>
+                <button id="btn-dock-close" class="btn-icon btn-sm" type="button" data-tip="Hide panel" aria-label="Hide panel"><span data-icon="x"></span></button>
+            </div>
+        </div>
+        <div id="console-panel" class="dock-panel active" role="tabpanel" data-testid="console-panel">
+            <div class="panel-toolbar">
+                <div class="filter-chips" role="group" aria-label="Filter by level">
+                    <button class="filter-chip" type="button" data-level="all" aria-pressed="true">All</button>
+                    <button class="filter-chip chip-error" type="button" data-level="error" aria-pressed="true">Errors</button>
+                    <button class="filter-chip chip-warn" type="button" data-level="warn" aria-pressed="true">Warnings</button>
+                    <button class="filter-chip chip-info" type="button" data-level="info" aria-pressed="true">Logs</button>
+                </div>
+                <input id="console-search" class="console-search" type="search" placeholder="Filter messages" aria-label="Filter messages">
+                <select id="console-origin" class="console-origin" aria-label="Message source">
+                    <option value="all">All sources</option>
+                    <option value="project">Project</option>
+                    <option value="internal">Owlet internal</option>
+                </select>
+                <span class="toolbar-spacer"></span>
+                <button id="btn-console-ts" class="btn btn-ghost btn-sm" type="button" aria-pressed="false">Timestamps</button>
+                <button id="btn-console-debug" class="btn btn-ghost btn-sm" type="button" aria-pressed="false" data-tip="Debug mode: show Owlet's own errors">Debug</button>
+                <button id="btn-clear-console" class="btn btn-ghost btn-sm" type="button">Clear</button>
+            </div>
+            <div id="console-output" role="log" aria-live="polite" aria-label="Console output"></div>
+        </div>
+        <div id="terminal-panel" class="dock-panel" role="tabpanel">
+            <div id="terminal-toolbar">
+                <span class="status-pill" id="terminal-status" data-state="local">Local</span>
+                <span id="terminal-mode">Local</span>
+                <select id="terminal-profile" class="profile-select" aria-label="Terminal profile"></select>
+                <button id="btn-terminal-new" class="btn-icon btn-sm" type="button" data-tip="New terminal" aria-label="New terminal"><span data-icon="plus"></span></button>
+                <span class="toolbar-spacer"></span>
+                <button id="btn-terminal-copy" class="btn-icon btn-sm" type="button" data-tip="Copy output" aria-label="Copy output"><span data-icon="copy"></span></button>
+                <button id="btn-terminal-kill" class="btn-icon btn-sm" type="button" data-tip="Kill session" aria-label="Kill session"><span data-icon="stop"></span></button>
+                <button id="btn-terminal-close" class="btn-icon btn-sm" type="button" data-tip="Hide terminal" aria-label="Close terminal"><span data-icon="x"></span></button>
+            </div>
+            <div id="terminal-host"></div>
+        </div>
+        <div id="problems-panel" class="dock-panel" role="tabpanel">
+            <div class="panel-toolbar">
+                <span id="problems-summary" class="toolbar-text"></span>
+            </div>
+            <div id="problems-list" role="list" aria-label="Problems"></div>
+        </div>
+    </section>
+    </div>
+
+    <!-- ===== Status bar: bottom row of the app frame. Readouts follow the active editor group. ===== -->
+    <footer id="status-bar" aria-label="Status bar" data-testid="status-bar">
+        <div class="sb-group">
+            <span id="status-text" data-testid="status-message"></span>
+            <button id="sb-branch" class="sb-item sb-preview" type="button" data-testid="sb-branch" data-tip="Branch switcher (preview)">
+                <span data-icon="branch"></span><span id="sb-branch-name">no repository</span><span class="sb-tag">Preview</span>
+            </button>
+            <span id="sb-sync" class="sb-item" data-testid="sb-sync">0↑ 0↓</span>
+            <span id="sb-remote" class="status-pill" data-state="local" data-testid="connection">Local</span>
+            <span id="sb-sandbox" class="sb-item" data-testid="sb-sandbox">Sandbox: off</span>
+            <span id="sb-ai" class="sb-item" data-testid="sb-ai">AI: no key</span>
+        </div>
+        <div class="sb-spacer"></div>
+        <div class="sb-group">
+            <span class="sb-item sb-count is-error" data-testid="sb-errors" title="Errors"><span data-icon="alert"></span><span id="sb-errors-count">0</span></span>
+            <span class="sb-item sb-count is-warn" data-testid="sb-warnings" title="Warnings"><span data-icon="alert"></span><span id="sb-warnings-count">0</span></span>
+            <span id="sb-cursor" class="sb-item" data-testid="sb-cursor">Ln 1, Col 1</span>
+            <span id="sb-selection" class="sb-item" data-testid="sb-selection"></span>
+            <button id="sb-indent" class="sb-item" type="button" data-testid="sb-indent" data-tip="Indentation">Spaces: 4</button>
+            <button id="sb-lang" class="sb-item" type="button" data-testid="sb-lang" data-tip="Language mode">Plain text</button>
+            <span id="collab-avatars" class="collab-avatars" data-testid="collab"></span>
+            <button id="sb-bell" class="sb-item sb-preview" type="button" data-testid="sb-bell" data-tip="Notifications (preview)" aria-label="Notifications (preview)"><span data-icon="bell"></span><span class="sb-tag">Preview</span></button>
+        </div>
+    </footer>
+
+    <!-- ===== Mobile bottom navigation (shown under 720px) ===== -->
+    <nav id="mobile-nav" aria-label="Views">
+        <button class="mobile-tab" type="button" data-mobile-view="editor" aria-selected="true"><span data-icon="code"></span>Editor</button>
+        <button class="mobile-tab" type="button" data-mobile-view="preview" aria-selected="false"><span data-icon="eye"></span>Preview</button>
+        <button class="mobile-tab" type="button" data-mobile-view="console" aria-selected="false"><span data-icon="terminal"></span>Console</button>
+        <button class="mobile-tab" type="button" data-mobile-view="ai" aria-selected="false"><span data-icon="sparkles"></span>AI</button>
+    </nav>
+    </div>
+
+    <!-- ===== Error details popup (double-click a Console row, press Enter, or click Details) ===== -->
+    <div class="dialog" id="error-dialog" style="display:none" data-testid="dialog">
+        <div class="dialog-box dialog--lg error-box" role="dialog" aria-modal="true" aria-labelledby="error-title" tabindex="-1">
+            <header class="dlg-head">
+                <span class="dlg-icon" data-icon="alert"></span>
+                <div class="dlg-titles">
+                    <div class="dlg-title" id="error-title"></div>
+                    <div class="dlg-sub">Error details</div>
+                </div>
+                <span id="error-level" class="error-badge">Error</span>
+                <span id="error-position" class="error-position"></span>
+                <button id="error-prev" class="error-nav" type="button">Previous</button>
+                <button id="error-next" class="error-nav" type="button">Next</button>
+                <button class="dlg-x" id="error-close-x" type="button" aria-label="Close error details"><span data-icon="x"></span></button>
+            </header>
+            <div class="dlg-body">
+                <dl class="error-meta">
+                    <dt>Kind</dt><dd id="error-kind"></dd>
+                    <dt>Time</dt><dd id="error-time"></dd>
+                    <dt>Location</dt><dd><button id="error-goto" class="error-goto" type="button"></button></dd>
+                </dl>
+                <h4>Message</h4>
+                <pre id="error-message" class="error-pre"></pre>
+                <h4>Code</h4>
+                <pre id="error-frame" class="code-frame"></pre>
+                <h4>Stack trace</h4>
+                <pre id="error-stack" class="error-pre error-stack"></pre>
+                <h4>Arguments</h4>
+                <div id="error-args" class="args-tree"></div>
+                <h4>Possible fix</h4>
+                <p id="error-fix" class="fix-hint"></p>
+            </div>
+            <footer class="error-actions dlg-foot">
+                <button id="error-copy" type="button">Copy error</button>
+                <button id="error-copy-stack" type="button">Copy stack</button>
+                <button id="error-close" type="button">Close</button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- ===== Settings dialog (shared anatomy: head / nav / content / foot) ===== -->
+    <div class="dialog" id="settings-dialog" style="display:none" data-testid="dialog">
+        <div class="dialog-box dialog--lg settings-box" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+            <header class="dlg-head">
+                <span class="dlg-icon" data-icon="settings"></span>
+                <div class="dlg-titles">
+                    <div class="dlg-title" id="settings-title">Settings</div>
+                    <div class="dlg-sub">Changes apply instantly and are remembered.</div>
+                </div>
+                <div class="field settings-search">
+                    <span class="field-icon" data-icon="search"></span>
+                    <input id="settings-search" type="text" placeholder="Search settings" aria-label="Search settings" spellcheck="false">
+                </div>
+                <button class="dlg-x dialog-close" type="button" aria-label="Close settings"><span data-icon="x"></span></button>
+            </header>
+            <div class="settings-body">
+                <nav class="settings-nav" role="tablist" aria-label="Settings sections">
+                    <div class="settings-nav-group">General</div>
+                    <button class="settings-nav-item active" data-settings-tab="appearance" role="tab" aria-selected="true" type="button"><span data-icon="sun"></span>Appearance</button>
+                    <button class="settings-nav-item" data-settings-tab="editor" role="tab" aria-selected="false" type="button"><span data-icon="code"></span>Editor</button>
+                    <button class="settings-nav-item" data-settings-tab="panels" role="tab" aria-selected="false" type="button"><span data-icon="layout"></span>Panels</button>
+                    <div class="settings-nav-group">Tools</div>
+                    <button class="settings-nav-item" data-settings-tab="shortcuts" role="tab" aria-selected="false" type="button"><span data-icon="keyboard"></span>Shortcuts</button>
+                    <button class="settings-nav-item" data-settings-tab="sandbox" role="tab" aria-selected="false" type="button"><span data-icon="cloud"></span>Sandbox</button>
+                    <button class="settings-nav-item" data-settings-tab="compiler" role="tab" aria-selected="false" type="button"><span data-icon="bolt"></span>Compiler</button>
+                    <div class="settings-nav-group">Owlet</div>
+                    <button class="settings-nav-item" data-settings-tab="about" role="tab" aria-selected="false" type="button"><span data-icon="info"></span>About</button>
+                </nav>
+                <div class="settings-content">
+                    <section class="settings-panel active" data-settings-panel="appearance" role="tabpanel">
+                        <h4 class="settings-panel-title">Appearance</h4>
+                        <p class="settings-panel-desc">Theme and brand accent for the whole app.</p>
+                        <div class="settings-section">
+                            <div class="settings-section-title">Theme</div>
+                            <div class="opt-cards" role="radiogroup" aria-label="Theme">
+                                <label class="opt-card opt-theme" data-theme-card="system">
+                                    <input type="radio" name="theme-card" value="system">
+                                    <span class="opt-check" data-icon="check"></span>
+                                    <span class="opt-preview opt-preview--auto"></span>
+                                    <span class="opt-title">System</span>
+                                    <span class="opt-desc">Match your OS setting</span>
+                                </label>
+                                <label class="opt-card opt-theme" data-theme-card="dark">
+                                    <input type="radio" name="theme-card" value="dark">
+                                    <span class="opt-check" data-icon="check"></span>
+                                    <span class="opt-preview opt-preview--dark"></span>
+                                    <span class="opt-title">Dark</span>
+                                    <span class="opt-desc">Low-light neutral surfaces</span>
+                                </label>
+                                <label class="opt-card opt-theme" data-theme-card="light">
+                                    <input type="radio" name="theme-card" value="light">
+                                    <span class="opt-check" data-icon="check"></span>
+                                    <span class="opt-preview opt-preview--light"></span>
+                                    <span class="opt-title">Light</span>
+                                    <span class="opt-desc">Bright neutral surfaces</span>
+                                </label>
+                                <label class="opt-card opt-theme" data-theme-card="hc">
+                                    <input type="radio" name="theme-card" value="hc">
+                                    <span class="opt-check" data-icon="check"></span>
+                                    <span class="opt-preview opt-preview--hc"></span>
+                                    <span class="opt-title">High contrast</span>
+                                    <span class="opt-desc">Maximum legibility</span>
+                                </label>
+                            </div>
+                            <!-- Kept hidden: app.js applies theme changes through this select. -->
+                            <select id="set-theme" class="visually-hidden" tabindex="-1" aria-hidden="true">
+                                <option value="system">System</option>
+                                <option value="dark">Dark</option>
+                                <option value="light">Light</option>
+                                <option value="hc">High contrast</option>
+                            </select>
+                        </div>
+                        <div class="settings-section">
+                            <div class="settings-section-title">Accent</div>
+                            <div class="set-group">
+                                <div class="set-row">
+                                    <div class="set-row-text">
+                                        <span class="set-label">Ember orange</span>
+                                        <span class="set-desc">Owlet's fixed brand accent — used sparingly for actions, focus and selection.</span>
+                                    </div>
+                                    <div class="set-control">
+                                        <span class="swatch-row"><span class="swatch is-current" style="--swatch-color: var(--accent)" title="Ember" aria-label="Ember accent"></span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="settings-panel" data-settings-panel="editor" role="tabpanel">
+                        <h4 class="settings-panel-title">Editor</h4>
+                        <p class="settings-panel-desc">How the code editor looks and behaves.</p>
+                        <div class="set-group">
+                            <div class="set-row">
+                                <div class="set-row-text">
+                                    <label class="set-label" for="set-fontsize">Font size</label>
+                                    <span class="set-desc">Editor text size in pixels (10–24).</span>
+                                </div>
+                                <div class="set-control"><input id="set-fontsize" type="number" min="10" max="24" value="14"></div>
+                            </div>
+                            <div class="set-row">
+                                <div class="set-row-text">
+                                    <label class="set-label" for="set-tabsize">Tab size</label>
+                                    <span class="set-desc">Spaces per indentation level (2–8).</span>
+                                </div>
+                                <div class="set-control"><input id="set-tabsize" type="number" min="2" max="8" value="4"></div>
+                            </div>
+                            <div class="set-row">
+                                <div class="set-row-text">
+                                    <label class="set-label" for="set-linenumbers">Line numbers</label>
+                                    <span class="set-desc">Show a gutter with line numbers.</span>
+                                </div>
+                                <div class="set-control"><label class="switch"><input id="set-linenumbers" type="checkbox" checked><span class="switch-track"></span></label></div>
+                            </div>
+                            <div class="set-row">
+                                <div class="set-row-text">
+                                    <label class="set-label" for="set-wordwrap">Word wrap</label>
+                                    <span class="set-desc">Wrap long lines instead of scrolling sideways.</span>
+                                </div>
+                                <div class="set-control"><label class="switch"><input id="set-wordwrap" type="checkbox" checked><span class="switch-track"></span></label></div>
+                            </div>
+                        </div>
+                        <input id="set-maxgroups" type="hidden" value="4">
+                    </section>
+
+                    <section class="settings-panel" data-settings-panel="panels" role="tabpanel">
+                        <h4 class="settings-panel-title">Panels</h4>
+                        <p class="settings-panel-desc">Preview behaviour and workspace layout.</p>
+                        <div class="set-group">
+                            <div class="set-row">
+                                <div class="set-row-text">
+                                    <label class="set-label" for="set-preview-auto">Auto-refresh preview</label>
+                                    <span class="set-desc">Rebuild the live preview while you type.</span>
+                                </div>
+                                <div class="set-control"><label class="switch"><input id="set-preview-auto" type="checkbox" checked><span class="switch-track"></span></label></div>
+                            </div>
+                            <div class="set-row">
+                                <div class="set-row-text">
+                                    <span class="set-label">Panel layout</span>
+                                    <span class="set-desc">Restore the default sidebar / preview / console arrangement.</span>
+                                </div>
+                                <div class="set-control"><button id="set-reset-layout" class="btn btn-ghost btn-sm" type="button">Reset layout</button></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="settings-panel" data-settings-panel="shortcuts" role="tabpanel">
+                        <h4 class="settings-panel-title">Shortcuts</h4>
+                        <p class="settings-panel-desc">Every keyboard shortcut in Owlet.</p>
+                        <div class="field">
+                            <span class="field-icon" data-icon="search"></span>
+                            <input id="shortcut-search" type="text" placeholder="Search shortcuts" aria-label="Search shortcuts" spellcheck="false">
+                        </div>
+                        <div id="shortcut-list"></div>
+                        <p class="settings-note">In the terminal: <kbd>help</kbd> lists commands.</p>
+                    </section>
+
+                    <section class="settings-panel" data-settings-panel="sandbox" role="tabpanel">
+                        <h4 class="settings-panel-title">Sandbox</h4>
+                        <p class="settings-panel-desc">Optional — run code in a remote sandbox with your own key.</p>
+                        <div class="alert alert--info"><span data-icon="lock"></span><span>Keys are stored only in this browser — nothing leaves your device except calls to the provider you choose.</span></div>
+                        <div class="set-group">
+                            <div class="set-row">
+                                <div class="set-row-text">
+                                    <label class="set-label" for="set-sandbox-provider">Provider</label>
+                                    <span class="set-desc">Which sandbox service to call.</span>
+                                </div>
+                                <div class="set-control">
+                                    <select id="set-sandbox-provider">
+                                        <option value="">&mdash;</option>
+                                        <option value="daytona">Daytona</option>
+                                        <option value="e2b">E2B</option>
+                                        <option value="modal">Modal</option>
+                                        <option value="upstash">Upstash Box</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="set-row">
+                                <div class="set-row-text">
+                                    <label class="set-label" for="set-sandbox-key">API key</label>
+                                    <span class="set-desc" id="sandbox-key-desc">Stored only in this browser.</span>
+                                </div>
+                                <div class="set-control">
+                                    <div class="field has-iconbtn">
+                                        <input id="set-sandbox-key" type="password" placeholder="stored only in this browser">
+                                        <button class="field-btn" type="button" data-eye="set-sandbox-key" aria-label="Show key"><span data-icon="eye"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="set-row">
+                                <div class="set-row-text">
+                                    <label class="set-label" for="set-proxy-url">Proxy URL</label>
+                                    <span class="set-desc">Optional — route calls through your own proxy.</span>
+                                </div>
+                                <div class="set-control"><input id="set-proxy-url" type="text" placeholder="optional — see README"></div>
+                            </div>
+                            <div class="set-row">
+                                <div class="set-row-text">
+                                    <span class="set-label">Connection</span>
+                                    <span class="set-desc">Check that the provider responds.</span>
+                                </div>
+                                <div class="set-control">
+                                    <span id="set-test-status" class="pill" hidden></span>
+                                    <button id="set-test-sandbox" class="btn btn-sm" type="button">Test connection</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="settings-panel" data-settings-panel="compiler" role="tabpanel">
+                        <h4 class="settings-panel-title">Compiler</h4>
+                        <p class="settings-panel-desc">Optional — a BYOK endpoint for compiled languages.</p>
+                        <div class="set-group">
+                            <div class="set-row">
+                                <div class="set-row-text">
+                                    <label class="set-label" for="set-compiler-url">Endpoint</label>
+                                    <span class="set-desc">HTTP endpoint that executes code.</span>
+                                </div>
+                                <div class="set-control"><input id="set-compiler-url" type="text" placeholder="https://…/execute"></div>
+                            </div>
+                            <div class="set-row">
+                                <div class="set-row-text">
+                                    <label class="set-label" for="set-compiler-key">API key</label>
+                                    <span class="set-desc">Stored only in this browser.</span>
+                                </div>
+                                <div class="set-control">
+                                    <div class="field has-iconbtn">
+                                        <input id="set-compiler-key" type="password">
+                                        <button class="field-btn" type="button" data-eye="set-compiler-key" aria-label="Show key"><span data-icon="eye"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="settings-panel" data-settings-panel="about" role="tabpanel">
+                        <div class="about-card">
+                            <span class="about-logo" data-icon="logo"></span>
+                            <span class="about-name">Owlet</span>
+                            <span class="about-meta">Browser-native playground for web projects · MIT License</span>
+                            <span class="about-meta">Everything runs and is stored locally in this browser.</span>
+                            <div class="about-links">
+                                <a href="https://github.com/BrixoByte/Owlet" target="_blank" rel="noopener"><span data-icon="github"></span>GitHub</a>
+                                <a href="docs/index.html"><span data-icon="file-text"></span>Docs</a>
+                                <a href="roadmap/index.html"><span data-icon="clock"></span>Roadmap</a>
+                                <a href="https://github.com/BrixoByte/Owlet/issues" target="_blank" rel="noopener"><span data-icon="alert"></span>Report an issue</a>
+                            </div>
+                            <button id="set-open-shortcuts" class="btn btn-ghost btn-sm" type="button" style="margin-top: var(--space-4)">Keyboard shortcuts</button>
+                            <p class="settings-note">Built on CodeMirror, JSZip, xterm.js and Pyodide.</p>
+                        </div>
+                    </section>
+                    <div class="settings-empty" id="settings-empty">No settings match your search.</div>
                 </div>
             </div>
-            <div class="settings-group shortcuts-inline">
-                <label class="settings-label">Keyboard Shortcuts</label>
-                <div class="shortcuts-inline-grid">
-                    <div class="shortcut-chip">
-                        <span>Save Project</span>
-                        <kbd>Ctrl + S</kbd>
-                    </div>
-                    <div class="shortcut-chip">
-                        <span>Load Project</span>
-                        <kbd>Ctrl + O</kbd>
-                    </div>
-                    <div class="shortcut-chip">
-                        <span>Share Project</span>
-                        <kbd>Ctrl + Shift + S</kbd>
-                    </div>
-                    <div class="shortcut-chip">
-                        <span>Toggle Theme</span>
-                        <kbd>Alt + T</kbd>
-                    </div>
-                    <div class="shortcut-chip">
-                        <span>Open Quick Settings</span>
-                        <kbd>Ctrl + K</kbd>
-                    </div>
-                    <div class="shortcut-chip">
-                        <span>Refresh Preview</span>
-                        <kbd>Alt + R</kbd>
-                    </div>
-                    <div class="shortcut-chip">
-                        <span>Switch Tabs</span>
-                        <kbd>Alt + 1 / 2 / 3</kbd>
-                    </div>
-                    <div class="shortcut-chip">
-                        <span>Device Views</span>
-                        <kbd>Alt + D / B / M</kbd>
-                    </div>
+            <footer class="dlg-foot">
+                <span class="dlg-foot-note">All changes save automatically.</span>
+                <button id="set-reset-all" class="btn btn-ghost btn-sm" type="button">Reset all settings</button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- ===== Saved projects dialog ===== -->
+    <div class="dialog" id="projects-dialog" style="display:none" data-testid="dialog">
+        <div class="dialog-box dialog--md" role="dialog" aria-modal="true" aria-labelledby="projects-title">
+            <header class="dlg-head">
+                <span class="dlg-icon" data-icon="folder"></span>
+                <div class="dlg-titles">
+                    <div class="dlg-title" id="projects-title">Saved projects</div>
+                    <div class="dlg-sub">Stored locally in this browser.</div>
                 </div>
-                <p class="shortcuts-hint">Tip: Press <kbd>Alt + ,</kbd> or <kbd>Ctrl + K</kbd> to toggle quick settings.</p>
+                <button class="dlg-x dialog-close" type="button" aria-label="Close saved projects"><span data-icon="x"></span></button>
+            </header>
+            <div class="dlg-body">
+                <div id="projects-list"></div>
             </div>
         </div>
     </div>
 
-    <!-- Loading Overlay -->
-    <div class="loading-overlay">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Loading...</div>
+    <!-- ===== Share dialog ===== -->
+    <div class="dialog" id="share-dialog" style="display:none" data-testid="dialog">
+        <div class="dialog-box dialog--sm" role="dialog" aria-modal="true" aria-labelledby="share-title">
+            <header class="dlg-head">
+                <span class="dlg-icon" data-icon="share"></span>
+                <div class="dlg-titles">
+                    <div class="dlg-title" id="share-title">Share project</div>
+                    <div class="dlg-sub">Packed into the link — no server involved.</div>
+                </div>
+                <button class="dlg-x dialog-close" type="button" aria-label="Close share"><span data-icon="x"></span></button>
+            </header>
+            <div class="dlg-body">
+                <div class="opt-cards" role="radiogroup" aria-label="Share mode">
+                    <label class="opt-card" data-share-card="public">
+                        <input type="radio" name="share-kind" value="public" checked>
+                        <span class="opt-check" data-icon="check"></span>
+                        <span class="opt-icon" data-icon="globe"></span>
+                        <span class="opt-title">Public</span>
+                        <span class="opt-desc">Anyone with the link opens their own copy — the project data lives inside the URL.</span>
+                    </label>
+                    <label class="opt-card" data-share-card="private">
+                        <input type="radio" name="share-kind" value="private">
+                        <span class="opt-check" data-icon="check"></span>
+                        <span class="opt-icon" data-icon="lock"></span>
+                        <span class="opt-title">Private</span>
+                        <span class="opt-desc">Encrypted in the browser. Opening needs the link AND the separate key.</span>
+                    </label>
+                </div>
+                <div id="share-generating" hidden>
+                    <div class="skel-line"></div>
+                </div>
+                <div id="share-ready">
+                    <div class="field has-btn">
+                        <input id="share-link" type="text" readonly aria-label="Share link">
+                        <button id="share-copy" class="field-btn" type="button"><span data-icon="copy"></span>Copy</button>
+                    </div>
+                    <div id="share-key-wrap" hidden>
+                        <label class="set-label" for="share-key">Access key — send it separately</label>
+                        <div class="field has-btn">
+                            <input id="share-key" type="text" readonly aria-label="Access key">
+                            <button id="share-copy-key" class="field-btn" type="button"><span data-icon="copy"></span>Copy</button>
+                        </div>
+                        <div class="alert alert--warn"><span data-icon="lock"></span><span>The key is NOT inside the link — send it through a private channel. Both are needed to open the project.</span></div>
+                    </div>
+                    <div class="alert alert--warn" id="share-long-note" hidden><span data-icon="alert"></span><span>This link is very long — big projects may not open in every browser.</span></div>
+                    <div class="alert alert--error" id="share-error" hidden>
+                        <span data-icon="alert"></span>
+                        <span id="share-error-text"></span>
+                        <button id="share-retry" class="field-btn" type="button">Retry</button>
+                    </div>
+                </div>
+                <div id="share-empty" class="empty-state" hidden>
+                    <span data-icon="folder"></span>
+                    <div class="empty-state-title">Nothing to share yet</div>
+                    <div class="empty-state-hint">Add a file to the project first — the whole project goes inside the link.</div>
+                    <button id="share-new-file" class="btn btn-sm" type="button">New file</button>
+                </div>
+                <p class="settings-note" id="share-note"></p>
+            </div>
+            <footer class="dlg-foot">
+                <span class="dlg-foot-note">Everything happens locally — the URL itself carries the project.</span>
+            </footer>
+        </div>
     </div>
 
-    <!-- Toast Container -->
-    <div class="toast-container"></div>
+    <!-- ===== Clone repository dialog ===== -->
+    <div class="dialog" id="clone-dialog" style="display:none" data-testid="dialog">
+        <div class="dialog-box dialog--sm" role="dialog" aria-modal="true" aria-labelledby="clone-title">
+            <header class="dlg-head">
+                <span class="dlg-icon" data-icon="github"></span>
+                <div class="dlg-titles">
+                    <div class="dlg-title" id="clone-title">Clone repository</div>
+                    <div class="dlg-sub">Public GitHub repos only.</div>
+                </div>
+                <button class="dlg-x dialog-close" type="button" aria-label="Close clone"><span data-icon="x"></span></button>
+            </header>
+            <div class="dlg-body">
+                <label class="set-label" for="clone-url">GitHub repo URL</label>
+                <div class="field">
+                    <span class="field-icon" data-icon="github"></span>
+                    <input id="clone-url" type="text" placeholder="owner/repo or https://github.com/…" spellcheck="false" autocomplete="off">
+                </div>
+                <p class="alert alert--info" id="clone-note"></p>
+            </div>
+            <footer class="dlg-foot">
+                <button id="clone-go" class="btn btn-primary btn-sm" type="button">Clone</button>
+                <button class="dialog-close btn btn-ghost btn-sm" type="button">Cancel</button>
+            </footer>
+        </div>
+    </div>
 
-    <!-- Progress Bar -->
-    <div class="progress-bar"></div>
+    <!-- ===== Command palette (Phase 8) ===== -->
+    <div class="dialog" id="palette-dialog" style="display:none" data-testid="dialog">
+        <div class="dialog-box palette-box">
+            <input id="palette-input" type="text" placeholder="Search files&hellip; type &gt; for commands" autocomplete="off">
+            <div id="palette-results"></div>
+        </div>
+    </div>
 
-    <!-- JSZip for file downloads -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    
-    <!-- CodeMirror JS -->
+    <!-- ===== Help desk dialog (? icon / ? key) ===== -->
+    <div class="dialog" id="help-dialog" style="display:none" data-testid="dialog">
+        <div class="dialog-box dialog--md" role="dialog" aria-modal="true" aria-labelledby="help-title">
+            <header class="dlg-head">
+                <span class="dlg-icon" data-icon="help"></span>
+                <div class="dlg-titles">
+                    <div class="dlg-title" id="help-title">Help</div>
+                    <div class="dlg-sub">Everything runs and is stored locally in this browser.</div>
+                </div>
+                <button class="dlg-x dialog-close" type="button" aria-label="Close help"><span data-icon="x"></span></button>
+            </header>
+            <div class="dlg-body">
+                <div class="help-links">
+                    <button class="help-link" id="help-open-shortcuts" type="button">
+                        <span class="help-link-ico" data-icon="keyboard"></span>
+                        <span class="help-link-text">
+                            <span class="help-link-name">Keyboard shortcuts</span>
+                            <span class="help-link-desc">View the full list in Settings</span>
+                        </span>
+                        <span class="help-link-go" data-icon="arrow-right"></span>
+                    </button>
+                    <a class="help-link" href="docs/index.html">
+                        <span class="help-link-ico" data-icon="file-text"></span>
+                        <span class="help-link-text">
+                            <span class="help-link-name">Documentation</span>
+                            <span class="help-link-desc">Getting started and guides</span>
+                        </span>
+                        <span class="help-link-go" data-icon="external"></span>
+                    </a>
+                    <a class="help-link" href="https://github.com/BrixoByte/Owlet/issues" target="_blank" rel="noopener">
+                        <span class="help-link-ico" data-icon="github"></span>
+                        <span class="help-link-text">
+                            <span class="help-link-name">Report an issue</span>
+                            <span class="help-link-desc">GitHub issue tracker</span>
+                        </span>
+                        <span class="help-link-go" data-icon="external"></span>
+                    </a>
+                </div>
+                <h4 class="settings-section-title">Quick tips</h4>
+                <div class="help-tips">
+                    <div class="help-tip"><span class="shortcut-keys"><kbd>Ctrl</kbd><span class="kbd-sep">+</span><kbd>P</kbd></span><span>Command palette</span></div>
+                    <div class="help-tip"><span class="shortcut-keys"><kbd>Ctrl</kbd><span class="kbd-sep">+</span><kbd>`</kbd></span><span>Toggle terminal</span></div>
+                    <div class="help-tip"><span class="shortcut-keys"><kbd>Alt</kbd><span class="kbd-sep">+</span><kbd>R</kbd></span><span>Refresh preview</span></div>
+                    <div class="help-tip"><span class="shortcut-keys"><kbd>?</kbd></span><span>This help dialog</span></div>
+                </div>
+            </div>
+            <footer class="dlg-foot">
+                <span class="dlg-foot-note">In the terminal: <kbd>help</kbd> lists commands.</span>
+            </footer>
+        </div>
+    </div>
+
+    <!-- ===== CDN libraries (pinned) ===== -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closetag.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/scroll/simplescrollbars.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/javascript-hint.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/html-hint.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/css-hint.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prettier/2.8.1/standalone.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prettier/2.8.1/parser-html.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prettier/2.8.1/parser-postcss.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prettier/2.8.1/parser-babel.js"></script>
-    <!-- Custom JS -->
-    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/javascript-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/html-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/css-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/xml-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/lint/lint.min.js"></script>
+
+    <!-- Linters (Phase 2) -->
+    <script src="https://cdn.jsdelivr.net/npm/eslint-linter-browserify@8.57.0/linter.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmlhint@1.1.4/dist/htmlhint.min.js" integrity="sha384-8Z80XK4IJU7rOjsqFhXKIUScwFsire1vVKeZ93Kgpc6Dr5HI7MCBUxNZm6carG9N" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/css-tree@2.3.1/dist/csstree.min.js"></script>
+
+    <!-- Zip export + terminal + python -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/lib/xterm.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/lib/addon-fit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+
+    <!-- ===== Owlet modules (order matters: state first, app last) ===== -->
+    <script src="js/state.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/editor.js"></script>
+    <script src="js/tabs.js"></script>
+    <script src="js/editorgroups.js"></script>
+    <script src="js/filetree.js"></script>
+    <script src="js/preview.js"></script>
+    <script src="js/console.js"></script>
+    <script src="js/error-details.js"></script>
+    <script src="js/lint.js"></script>
+    <script src="js/python.js"></script>
+    <script src="js/terminal.js"></script>
+    <script src="js/sandbox.js"></script>
+    <script src="js/compiler.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/share.js"></script>
+    <script src="js/clone.js"></script>
+    <script src="js/import.js"></script>
+
+    <!-- ===== Owlet UI layer: design system + workbench shell. Loaded AFTER the logic. ===== -->
+    <script src="js/ui/icons.js"></script>
+    <script src="js/ui/contract.js"></script>
+    <script src="js/ui/dialog.js"></script>
+    <script src="js/ui/dialogs.js"></script>
+    <script src="js/ui/selects.js"></script>
+    <script src="js/ui/settings.js"></script>
+    <script src="js/ui/shortcuts.js"></script>
+    <script src="js/ui/toast.js"></script>
+    <script src="js/ui/menu.js"></script>
+    <script src="js/ui/theme.js"></script>
+    <script src="js/ui/layout.js"></script>
+    <script src="js/ui/explorer.js"></script>
+    <script src="js/ui/editor-chrome.js"></script>
+    <script src="js/ui/preview-panel.js"></script>
+    <script src="js/ui/dock-panel.js"></script>
+    <script src="js/ui/status-bar.js"></script>
+    <script src="js/ui/tooltip.js"></script>
+    <script src="js/ui/dropzone.js"></script>
+    <script src="js/ui/menubar.js"></script>
+    <script src="js/ui/mock.js"></script>
+    <script src="js/ui/boot.js"></script>
+</body>
+</html>
 </body>
 </html>

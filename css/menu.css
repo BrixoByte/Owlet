@@ -1,0 +1,87 @@
+/* ==========================================================================
+   menu.css — the ONE menu/popover system (menubar dropdowns + any popup menu
+   opened via OwletUI.menu). Neutral hovers only: the accent appears only on
+   the focus ring and on checked items — never as a big hover background.
+   ========================================================================== */
+
+.menu {
+    position: fixed;
+    min-width: 240px;
+    max-width: 280px;
+    padding: var(--space-2);
+    background: var(--surface-4);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2);
+    z-index: var(--z-dropdown);
+    animation: menu-in var(--dur-fast) var(--ease-out);
+}
+@keyframes menu-in {
+    from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* Each row: fixed icon column (reserved even when empty), label, shortcut. */
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    height: 36px;
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-sm);
+    color: var(--text-1);
+    font-size: var(--fs-base);
+    text-align: left;
+}
+/* The icon column is ALWAYS 18px — rows line up whether or not they have an icon. */
+.menu-item .icon,
+.menu-item .menu-ico {
+    flex: 0 0 18px;
+    width: 16px;
+    height: 16px;
+    color: var(--text-2);
+}
+.menu-item .menu-ico:empty { visibility: hidden; }
+.menu-item:hover,
+.menu-item.selected,
+.menu-item[aria-selected="true"] {
+    background: var(--state-hover);
+    color: var(--text-1);
+}
+.menu-item:active { background: var(--state-active); }
+.menu-item:focus-visible {
+    outline: var(--focus-width) solid var(--focus-ring, var(--accent));
+    outline-offset: -2px;
+}
+.menu-item[disabled] { opacity: 0.45; pointer-events: none; }
+.menu-item .menu-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Shortcut hint: muted text, right-aligned. */
+.menu-item .menu-kbd {
+    flex: 0 0 auto;
+    color: var(--text-3);
+    font-size: var(--fs-xs);
+    font-family: var(--font-mono);
+}
+/* Check mark column: accent marks the checked item (the only accent use). */
+.menu-item .menu-check { flex: 0 0 16px; color: var(--accent); }
+.menu-item[aria-checked="true"] .icon { color: var(--accent); }
+/* Destructive items tint text/icon only — no red background. */
+.menu-item.is-danger,
+.menu-item.is-danger .icon { color: var(--error); }
+
+/* Separator + optional group label. */
+.menu-sep { height: 1px; margin: var(--space-1) var(--space-2); background: var(--border-subtle); }
+.menu-title {
+    padding: var(--space-2) var(--space-2) var(--space-1);
+    color: var(--text-3);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+/* Submenu chevron slot. */
+.menu-item .menu-sub { flex: 0 0 auto; color: var(--text-3); }
+
+/* Menubar trigger buttons: neutral hover, raised surface when open. */
+.menu-btn[aria-expanded="true"] { background: var(--state-active); color: var(--text-1); }

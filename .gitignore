@@ -1,0 +1,13 @@
+# Playwright / qa tooling
+qa/node_modules/
+qa/report/test-results/
+qa/report/html/
+
+# OS junk
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Editor junk
+*.swp
+*~
