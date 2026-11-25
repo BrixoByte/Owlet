@@ -195,6 +195,31 @@ OwletUI.editorChrome = (function () {
         if (tpl.open) Owlet.state.openFile(tpl.open);
     }
 
+    // The landing CTA links here as playground/?idea=... . Honour it once on
+    // a truly empty boot: start the same 'web' project the New project card
+    // makes, plus the idea dropped into IDEA.md so the user can begin from
+    // it. A restored session is left alone, and the param is stripped from
+    // the URL either way so a reload does not recreate the project.
+    function consumeIdeaParam() {
+        var params = null;
+        try { params = new URLSearchParams(window.location.search); } catch (e) { return; }
+        var idea = params.get('idea');
+        if (idea === null) return;
+        params.delete('idea');
+        var qs = params.toString();
+        var clean = window.location.pathname + (qs ? '?' + qs : '') + window.location.hash;
+        try { window.history.replaceState(null, '', clean); } catch (e) { /* file:// may throw */ }
+        idea = idea.trim().slice(0, 200);
+        if (!idea) return;
+        if (Owlet.state.anyTabsOpen() || Owlet.state.listFiles().length) return;
+        var tpl = TEMPLATES['web'];
+        if (!tpl) return;
+        var files = JSON.parse(JSON.stringify(tpl.files));
+        files['IDEA.md'] = '# Idea\n\n' + idea + '\n';
+        Owlet.state.loadFiles(files, 'untitled');
+        if (tpl.open) Owlet.state.openFile(tpl.open);
+    }
+
     // Dispatch one welcome-screen action.
     function welcomeAction(action) {
         if (action === 'clone') return Owlet.clone && Owlet.clone.openDialog();
@@ -216,6 +241,7 @@ OwletUI.editorChrome = (function () {
         watchTabs();
         wireToolbar();
         wireWelcome();
+        consumeIdeaParam();
         renderWelcome();
     }
 

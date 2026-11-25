@@ -33,6 +33,14 @@ test.describe('first run @firstrun', () => {
     await expect(page.locator('.tab', { hasText: 'hello.txt' })).toBeVisible();
   });
 
+  test('landing CTA ?idea= seeds the starter project with IDEA.md and cleans the URL', async ({ page }) => {
+    await page.goto('/playground/?idea=' + encodeURIComponent('A cat photo gallery'));
+    await expect(page.locator('#welcome')).toBeHidden();
+    await expect(page.locator('#file-tree')).toContainText('IDEA.md');
+    await expect(page.locator('#file-tree')).toContainText('index.html');
+    expect(page.url()).not.toContain('idea=');
+  });
+
   test('welcome card titles match their template and action names', async ({ page }) => {
     await page.goto('/playground/');
     const titles = await page.locator('#welcome .card-title').allTextContents();
