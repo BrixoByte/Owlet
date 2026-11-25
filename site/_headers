@@ -36,10 +36,9 @@
   Cache-Control: no-cache
 
 # Static assets: file names are NOT content-hashed, so `immutable` would be
-# a lie. 1 hour lets edits propagate quickly; brand artwork changes rarely,
-# so it gets a day.
-/assets/brand/*
-  Cache-Control: public, max-age=86400
+# a lie — 1 hour lets edits propagate quickly. Note: Pages MERGES every
+# matching rule (more-specific does NOT override), so /assets/brand/* cannot
+# have a different lifetime than /assets/* without a contradictory header.
 /assets/*
   Cache-Control: public, max-age=3600
 /css/*
